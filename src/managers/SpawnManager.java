@@ -1,4 +1,4 @@
 package managers;
 
-public class SoundManager {
+public class SpawnManager {
 }

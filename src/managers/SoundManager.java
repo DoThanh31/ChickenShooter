@@ -1,4 +1,4 @@
 package managers;
 
-public class CollisionManager {
+public class SoundManager {
 }

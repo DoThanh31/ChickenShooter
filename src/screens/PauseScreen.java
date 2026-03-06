@@ -1,4 +1,4 @@
-package entities;
+package screens;
 
 public class PauseScreen {
 }

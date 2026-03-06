@@ -1,4 +1,4 @@
 package entities;
 
-public class Chicken {
+public class Bullet {
 }

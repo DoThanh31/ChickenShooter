@@ -1,4 +1,4 @@
 package managers;
 
-public class InputManager {
+public class CollisionManager {
 }
