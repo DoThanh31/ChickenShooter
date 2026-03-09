@@ -1,13 +1,13 @@
 package model.entity;
 
-public abstract class EntiyModel {
+public abstract class EntityModel {
     protected float x,y;
     protected int w,h;
     protected int hp;
     protected int maxHp;
     protected boolean alive;
 
-    public EntiyModel(float x, float y, int w, int h, int hp, int maxHp, boolean alive) {
+    public EntityModel(float x, float y, int w, int h, int hp, int maxHp, boolean alive) {
         this.x = x;
         this.y = y;
         this.w = w;
@@ -16,6 +16,7 @@ public abstract class EntiyModel {
         this.maxHp = maxHp;
         this.alive = alive;
     }
+
 
     //toa do tam
     public float getCenterX(){
