@@ -1,6 +1,7 @@
-package model.entity.Chicken;
+package model.entity.chicken;
 
 import model.entity.EntityModel;
+
 
 public abstract class ChickenModel extends EntityModel {
 
@@ -10,19 +11,21 @@ public abstract class ChickenModel extends EntityModel {
     protected int   shootTimer;
     protected int   shootDelay;
 
-    public ChickenModel(float x, float y, int w, int h, int hp, int maxHp, boolean alive, float speed, int scoreValue, int moveDir, int shootTimer, int shootDelay) {
-        super(x, y, w, h, hp, maxHp, alive);
-        this.speed = speed;
+    public ChickenModel(float x, float y, int w, int h,
+                        int maxHp, float speed, int scoreValue, int shootDelay) {
+        super(x, y, w, h, maxHp);
+        this.speed      = speed;
+        this.moveDir    = 1;
         this.scoreValue = scoreValue;
-        this.moveDir = 1;
-        this.shootTimer = shootDelay;//dan da san sang
+        this.shootTimer = shootDelay; // bắt đầu với cooldown đầy
         this.shootDelay = shootDelay;
     }
 
+
     public abstract void move();
 
-    public abstract boolean canShoot();
 
+    public abstract boolean canShoot();
 
     public void tickShoot() {
         if (shootTimer > 0) shootTimer--;
@@ -31,6 +34,7 @@ public abstract class ChickenModel extends EntityModel {
     public void resetShootTimer() {
         shootTimer = shootDelay;
     }
+
 
     public void reverseDir() {
         moveDir = -moveDir;

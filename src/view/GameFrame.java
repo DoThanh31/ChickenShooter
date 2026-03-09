@@ -3,9 +3,11 @@ package view;
 import javax.swing.*;
 
 public class GameFrame extends JFrame {
+    public GamePanel gamePanel=new GamePanel();
     public  GameFrame() {
+        add(gamePanel);
+        pack();
         setTitle("ChickenShooter");
-        setSize(800,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         setLocationRelativeTo(null);
