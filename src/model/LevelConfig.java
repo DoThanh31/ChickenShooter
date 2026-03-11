@@ -13,8 +13,8 @@ public class LevelConfig {
     private static final LevelConfig[] CONFIGS = {
             new LevelConfig(1,  8, 0, false, 1.0f),
             new LevelConfig(2, 10, 0, false, 1.3f),
-            new LevelConfig(3,  8, 3, true,  1.5f),
-            new LevelConfig(4,  6, 4, true,  1.8f),
+            new LevelConfig(3,  8, 3, false,  1.5f),
+            new LevelConfig(4,  6, 4, false,  1.8f),
             new LevelConfig(5,  4, 4, true,  2.0f),
     };
 
