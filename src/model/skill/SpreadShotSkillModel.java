@@ -1,4 +1,4 @@
-package model.entity.skill;
+package model.skill;
 /**
  * SpreadShotSkillModel - Boss bắn chùm 8 hướng
  * Kế thừa skillModel

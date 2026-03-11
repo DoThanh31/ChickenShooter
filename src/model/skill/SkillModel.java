@@ -1,4 +1,4 @@
-package model.entity.skill;
+package model.skill;
 
 public abstract class SkillModel {
 

@@ -1,4 +1,4 @@
-package model.entity.weapon;
+package model.weapon;
 
 public class WeaponModel {
 

@@ -1,4 +1,4 @@
-package model.entity.skill;
+package model.skill;
 /**
  * SummonSkillModel - Boss triệu hồi thêm gà thường
  * Kế thừ SkillModel
