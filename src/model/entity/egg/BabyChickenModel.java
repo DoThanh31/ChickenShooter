@@ -5,10 +5,8 @@ package model.entity.egg;
  * ke thua tu ChickenModel
  */
 import model.entity.chicken.ChickenModel;
-
-public class BabyChickenModel extends ChickenModel {
-
-    private int hp = 1;
+public class BabyChickenModel {
+     private int hp = 1;
 
     // tốc độ di chuyển ngang (nhanh)
     private double speedX = 4;
@@ -66,6 +64,4 @@ public class BabyChickenModel extends ChickenModel {
     public int getHp() {
         return hp;
     }
-}
-public class BabyChickenModel {
 }
