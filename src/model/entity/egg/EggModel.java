@@ -5,5 +5,6 @@ package model.entity.egg;
  * crackStage: 0(nguyên) → 1 → 2 → 3(nở)
  * ke thua thu entityModel
  */
+
 public class EggModel {
 }

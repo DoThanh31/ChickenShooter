@@ -4,5 +4,6 @@ package model.entity.egg;
  * HP: 1 | Nhỏ | Di chuyển nhanh ngang | Bắn lên player
  * ke thua tu ChickenModel
  */
+
 public class BabyChickenModel {
 }
