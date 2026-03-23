@@ -8,7 +8,7 @@ package model.entity;
         protected int   maxHp;
         protected boolean alive;
 
-        public EntityModel(float v, float x, float y, int w, int h) {
+        public EntityModel(float x, float y, int w, int h, int maxHp) {
             this.x     = x;
             this.y     = y;
             this.w     = w;
@@ -60,4 +60,3 @@ package model.entity;
         public void setY(float y)         { this.y = y; }
         public void setAlive(boolean alive){ this.alive = alive; }
     }
-
