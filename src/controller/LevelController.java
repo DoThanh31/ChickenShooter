@@ -1,5 +1,6 @@
 package controller;
 
+import controller.entity.chicken.*;
 import model.GameModel;
 import model.LevelConfig;
 import model.entity.chicken.BossChickenModel;
@@ -12,10 +13,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public class LevelController {
+public class LevelController implements Updatable {
 
     private final GameModel       gameModel;
-    private final List<ChickenModel> chickens;
+    private final List<ChickenController> chickens;
     private final Random random;
 
     private int   chickenSpawnedCount;
@@ -35,6 +36,7 @@ public class LevelController {
         bossSpawned         = false;
     }
 
+    @Override
     public void update() {
         if (!gameModel.isPlaying()) return;
 
@@ -50,29 +52,20 @@ public class LevelController {
             }
         } else if (config.hasBoss() && !bossSpawned && chickens.isEmpty()) {
             // Hết gà thường -> Gọi boss
-            BossChickenModel boss = new BossChickenModel(350, 50, config.getLevel());
-            chickens.add(boss);
+            BossChickenModel bossModel = new BossChickenModel(350, 50, config.getLevel());
+            chickens.add(new BossChickenController(bossModel));
             bossSpawned = true;
         }
 
         // Update movement
-        Iterator<ChickenModel> it = chickens.iterator();
+        Iterator<ChickenController> it = chickens.iterator();
         while (it.hasNext()) {
-            ChickenModel c = it.next();
-            if (!c.isAlive()) {
+            ChickenController c = it.next();
+            if (!c.getModel().isAlive()) {
                 it.remove();
                 continue;
             }
-            c.move();
-            c.tickShoot();
-
-            if (c instanceof EggChickenModel) ((EggChickenModel)c).tickEgg();
-            if (c instanceof BossChickenModel) ((BossChickenModel)c).tickSkills();
-
-            // Biên
-            if (c.getX() <= 0 || c.getX() + c.getW() >= 800) {
-                c.reverseDir();
-            }
+            c.update();
         }
 
         // Check clear
@@ -91,11 +84,23 @@ public class LevelController {
         float y = 50 + random.nextInt(200);
         boolean isEgg = random.nextBoolean() && config.getEggCount() > 0;
 
-        ChickenModel cm = isEgg ? new EggChickenModel(x, y) : new NormalChickenModel(x, y);
-        cm.setSpeed(config.getChickenSpeed());
-        chickens.add(cm);
+        if (isEgg) {
+             EggChickenModel cm = new EggChickenModel(x, y);
+             cm.setSpeed(config.getChickenSpeed());
+             chickens.add(new EggChickenController(cm));
+        } else {
+             NormalChickenModel cm = new NormalChickenModel(x, y);
+             cm.setSpeed(config.getChickenSpeed());
+             chickens.add(new NormalChickenController(cm));
+        }
         chickenSpawnedCount++;
     }
 
-    public List<ChickenModel> getChickens() { return chickens; }
+    public List<ChickenModel> getChickens() { 
+        List<ChickenModel> models = new ArrayList<>();
+        for (ChickenController c : chickens) {
+            models.add(c.getModel());
+        }
+        return models; 
+    }
 }
