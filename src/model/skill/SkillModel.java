@@ -39,10 +39,17 @@ public abstract class SkillModel {
 
     public boolean isReady()  { return !active && cooldownTimer <= 0; }
     public boolean isActive() { return active; }
+    
+    public void setActive(boolean active) {
+        this.active = active;
+        if (!active) {
+            deactivate();
+        }
+    }
+
     public String  getName()  { return name; }
 
     public float getCooldownRatio() {
         return 1f - (float) cooldownTimer / cooldown;
     }
 }
-

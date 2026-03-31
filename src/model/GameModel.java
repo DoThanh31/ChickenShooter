@@ -25,11 +25,13 @@ public class GameModel {
     }
 
     public void nextLevel() {
-        level++;
-        if (level > MAX_LEVEL) {
-            phase = Phase.WIN;
+        if (level < MAX_LEVEL) {
+            level++;
+            // Chuyển sang phase LEVELUP để có thể tạo hiệu ứng chuyển màn nếu muốn
+            // Ở LevelController, chúng ta sẽ check level này để reset
+            System.out.println("Model Level Up to: " + level);
         } else {
-            phase = Phase.LEVELUP;
+            phase = Phase.WIN;
         }
     }
 
@@ -55,7 +57,7 @@ public class GameModel {
         phase = Phase.PLAYING;
     }
 
-    // ── Helper (rất nên có) ─────────────────────────────────
+    // ── Helper ─────────────────────────────────
 
     public boolean isPlaying() {
         return phase == Phase.PLAYING;

@@ -3,6 +3,7 @@ package controller;
 import controller.entity.PlayerController;
 import controller.entity.bullet.BulletController;
 import controller.item.ItemController;
+import controller.skill.SkillController;
 import model.GameModel;
 import model.entity.PlayerModel;
 import model.entity.bullet.BulletModel;
@@ -27,72 +28,63 @@ public class GameController implements Updatable {
     private final GameModel       gameModel;
     private final PlayerController playerController;
     private final LevelController levelController;
+    private final SkillController skillController;
 
-    // Quản lý đạn và item chung ở đây
     private final List<BulletController> bullets;
     private final List<ItemController>   items;
 
     private final Random random;
 
-    // Kích thước màn hình (để check out of bounds)
+    private boolean isShooting = false; // Trạng thái nhấn chuột để bắn
+
     private static final int GAME_WIDTH  = 800;
     private static final int GAME_HEIGHT = 600;
 
     public GameController() {
         this.gameModel       = new GameModel();
         this.playerController = new PlayerController(new PlayerModel());
-        // LevelController sẽ handle việc spawn gà theo level
         this.levelController = new LevelController(gameModel);
+        this.skillController = new SkillController();
         
         this.bullets         = new ArrayList<>();
         this.items           = new ArrayList<>();
         this.random          = new Random();
     }
 
-    /** Khởi tạo / Reset game */
     public void startGame() {
         gameModel.reset();
         getPlayer().reset();
-        
         bullets.clear();
         items.clear();
-        
         levelController.startLevel();
     }
 
-    /** Game Loop chính (gọi từ GameThread/Timer) */
     @Override
     public void update() {
-        // Nếu pause hoặc game over thì không update logic game
         if (gameModel.isPause() || gameModel.isGameOver()) return;
 
-        // 1. Update Player
         playerController.update();
-        if (getPlayer().canShoot()) {
+        
+        // CHỈ BẮN KHI ĐANG NHẤN CHUỘT (isShooting = true)
+        if (isShooting && getPlayer().canShoot()) {
             firePlayerBullet();
             getPlayer().resetShootTimer();
         }
 
-        // 2. Update Level (Spawn & Move Chickens)
         levelController.update();
-        
-        // 3. Cho gà bắn đạn (Logic này có thể nằm trong LevelController hoặc ở đây)
         handleChickenShooting();
-
-        // 4. Update Bullets & Items
         updateBullets();
         updateItems();
-
-        // 5. Xử lý va chạm
         checkCollisions();
 
-        // 6. Check điều kiện thua
         if (!getPlayer().isAlive()) {
             gameModel.setLose();
         }
     }
 
-    // ── Update Sub-systems ───────────────────────────────────
+    public void setShooting(boolean shooting) {
+        this.isShooting = shooting;
+    }
 
     private void handleChickenShooting() {
         List<ChickenModel> chickens = levelController.getChickens();
@@ -101,27 +93,24 @@ public class GameController implements Updatable {
 
             if (c.canShoot()) {
                 if (c instanceof BossChickenModel boss) {
-                    fireBossBullet(boss);
+                    skillController.updateBossSkills(boss, getBulletModelListFromControllers(bullets));
                 } else if (c instanceof EggChickenModel eggC) {
-                    // Gà trứng chỉ thả trứng khi đến hạn
                     if (eggC.canDropEgg()) {
-                        // Trứng rơi thẳng
-                        bullets.add(new BulletController(ChickenBulletModel.straight(
-                                eggC.getCenterX(), 
-                                eggC.getY() + eggC.getH()
-                        )));
+                        bullets.add(new BulletController(ChickenBulletModel.straight(eggC.getCenterX(), eggC.getY() + eggC.getH())));
                         eggC.resetEggTimer();
                     }
                 } else {
-                    // Gà thường bắn đạn thường
-                    bullets.add(new BulletController(ChickenBulletModel.straight(
-                            c.getCenterX(), 
-                            c.getY() + c.getH()
-                    )));
+                    bullets.add(new BulletController(ChickenBulletModel.straight(c.getCenterX(), c.getY() + c.getH())));
                 }
                 c.resetShootTimer();
             }
         }
+    }
+
+    private List<BulletModel> getBulletModelListFromControllers(List<BulletController> bcs) {
+        List<BulletModel> models = new ArrayList<>();
+        for (BulletController bc : bcs) models.add(bc.getModel());
+        return models;
     }
 
     private void updateBullets() {
@@ -130,10 +119,7 @@ public class GameController implements Updatable {
             BulletController bc = it.next();
             bc.update();
             BulletModel b = bc.getModel();
-
-            // Xóa đạn ra khỏi màn hình
-            if (b.getY() < -50 || b.getY() > GAME_HEIGHT + 50 || 
-                b.getX() < -50 || b.getX() > GAME_WIDTH + 50) {
+            if (b.getY() < -50 || b.getY() > GAME_HEIGHT + 50 || b.getX() < -50 || b.getX() > GAME_WIDTH + 50) {
                 it.remove();
             }
         }
@@ -151,8 +137,6 @@ public class GameController implements Updatable {
         }
     }
 
-    // ── Actions ──────────────────────────────────────────────
-
     private void firePlayerBullet() {
         WeaponType type = getPlayer().getWeapon().getType();
         int damage      = getPlayer().getWeapon().getDamage();
@@ -163,136 +147,96 @@ public class GameController implements Updatable {
         if (type == WeaponType.SINGLE) {
             bullets.add(new BulletController(new SingleBulletModel(px - SingleBulletModel.WIDTH/2f, py, damage, pierce)));
         } else {
-            // Double: 2 viên song song
             bullets.add(new BulletController(new DoubleBulletModel(px - 10, py, damage, pierce, DoubleBulletModel.Side.LEFT)));
             bullets.add(new BulletController(new DoubleBulletModel(px + 4,  py, damage, pierce, DoubleBulletModel.Side.RIGHT)));
         }
     }
 
-    private void fireBossBullet(BossChickenModel boss) {
-        float bx = boss.getCenterX();
-        float by = boss.getY() + boss.getH();
-
-        // 1. Luôn bắn 1 viên thẳng (nếu muốn khó hơn)
-        bullets.add(new BulletController(ChickenBulletModel.straight(bx, by)));
-
-        // 2. Skill Spread Shot (Bắn tỏa)
-        if (boss.canSpread()) {
-            // Bắn 3 viên tỏa ra
-            bullets.add(new BulletController(ChickenBulletModel.angled(bx, by, -2f, 4f)));
-            bullets.add(new BulletController(ChickenBulletModel.angled(bx, by,  0f, 4f)));
-            bullets.add(new BulletController(ChickenBulletModel.angled(bx, by,  2f, 4f)));
-            boss.resetSpread();
-        }
-
-        // 3. Skill Laser (Bắn chùm nhanh - ở đây mô phỏng bằng đạn nhanh)
-        if (boss.canLaser()) {
-            bullets.add(new BulletController(ChickenBulletModel.angled(bx, by, 0f, 8f))); // đạn rất nhanh
-            boss.resetLaser();
+    private void spawnItem(float x, float y, int scoreValue) {
+        items.add(new ItemController(new PowerUpModel(x, y, PowerUpModel.PowerUpType.SCORE_DRUMSTICK)));
+        if (random.nextFloat() < 0.15f) { 
+            int r = random.nextInt(100);
+            ItemModel buff;
+            if (r < 40) {
+                WeaponType type = random.nextBoolean() ? WeaponType.SINGLE : WeaponType.DOUBLE;
+                buff = new WeaponItemModel(x, y + 10, type);
+            } else if (r < 70) {
+                buff = new PowerUpModel(x, y + 10, PowerUpModel.PowerUpType.HEAL);
+            } else {
+                buff = new PowerUpModel(x, y + 10, random.nextBoolean() ? PowerUpModel.PowerUpType.SHIELD : PowerUpModel.PowerUpType.DAMAGE_UP);
+            }
+            items.add(new ItemController(buff));
         }
     }
-
-    private void spawnItem(float x, float y) {
-        // Tỉ lệ rớt item: 25%
-        if (random.nextFloat() > 0.25f) return;
-
-        int r = random.nextInt(100);
-        ItemModel item;
-
-        if (r < 40) { // 0-39: Vũ khí
-            // Random loại đạn
-            WeaponType type = random.nextBoolean() ? WeaponType.SINGLE : WeaponType.DOUBLE;
-            item = new WeaponItemModel(x, y, type);
-        } else if (r < 70) { // 40-69: Hồi máu
-            item = new PowerUpModel(x, y, PowerUpModel.PowerUpType.HEAL);
-        } else { // 70-99: Khiên hoặc Tăng dame
-            item = new PowerUpModel(x, y, random.nextBoolean() 
-                    ? PowerUpModel.PowerUpType.SHIELD 
-                    : PowerUpModel.PowerUpType.DAMAGE_UP);
-        }
-        items.add(new ItemController(item));
-    }
-
-    // ── Collision Detection ──────────────────────────────────
 
     private void checkCollisions() {
         List<ChickenModel> chickens = levelController.getChickens();
 
-        // Check Bullet vs Entities
+        if (skillController.getLaserSkill().isActive()) {
+            float laserY = skillController.getLaserSkill().getTargetY();
+            int laserH = 15;
+            if (getPlayer().getY() < laserY + laserH && getPlayer().getY() + getPlayer().getH() > laserY) {
+                getPlayer().takeDamage(1);
+            }
+        }
+
         Iterator<BulletController> bIt = bullets.iterator();
         while (bIt.hasNext()) {
             BulletController bc = bIt.next();
             BulletModel b = bc.getModel();
             boolean hit = false;
-
             if (b.getOwner() == BulletModel.Owner.PLAYER) {
-                // Đạn Player bắn trúng Gà?
                 for (ChickenModel c : chickens) {
                     if (c.isAlive() && c.collidesWith(b)) {
                         c.takeDamage(b.getDamage());
-                        
-                        // Nếu gà chết -> Score + Drop Item
-                        if (!c.isAlive()) {
-                            gameModel.addScore(c.getScoreValue());
-                            spawnItem(c.getX(), c.getY());
-                        }
-                        
+                        if (!c.isAlive()) spawnItem(c.getX(), c.getY(), c.getScoreValue());
                         hit = true;
-                        if (!b.isPierce()) break; // Nếu ko xuyên thấu thì dừng check gà khác
+                        if (!b.isPierce()) break;
                     }
                 }
             } else {
-                // Đạn Gà/Boss bắn trúng Player?
                 if (getPlayer().isAlive() && getPlayer().collidesWith(b)) {
                     getPlayer().takeDamage(b.getDamage());
                     hit = true;
                 }
             }
-
-            // Nếu trúng và ko xuyên -> Xóa đạn
-            if (hit && !b.isPierce()) {
-                bIt.remove();
-            }
+            if (hit && !b.isPierce()) bIt.remove();
         }
 
-        // Check Player vs Item
         Iterator<ItemController> iIt = items.iterator();
         while (iIt.hasNext()) {
             ItemController ic = iIt.next();
             ItemModel item = ic.getModel();
             if (item.isAlive() && getPlayer().collidesWith(item)) {
-                item.applyEffect(getPlayer());
-                iIt.remove(); // Ăn xong thì mất
+                if (item instanceof PowerUpModel && ((PowerUpModel)item).getPowerUpType() == PowerUpModel.PowerUpType.SCORE_DRUMSTICK) {
+                    gameModel.addScore(100);
+                } else {
+                    item.applyEffect(getPlayer());
+                }
+                iIt.remove();
             }
         }
 
-        // Check Player vs Body (Va chạm trực tiếp)
         for (ChickenModel c : chickens) {
             if (c.isAlive() && getPlayer().isAlive() && c.collidesWith(getPlayer())) {
-                getPlayer().takeDamage(1); // Mất máu khi đâm
-                // Tùy game design: Gà có thể chết luôn hoặc ko
+                getPlayer().takeDamage(1);
                 c.takeDamage(999); 
             }
         }
     }
-
-    // ── Getters for View ─────────────────────────────────────
 
     public GameModel       getGameModel() { return gameModel; }
     public PlayerModel     getPlayer()    { return playerController.getModel(); }
     public List<ChickenModel> getChickens() { return levelController.getChickens(); }
     public List<BulletModel>  getBullets()  { 
         List<BulletModel> models = new ArrayList<>();
-        for (BulletController bc : bullets) {
-            models.add(bc.getModel());
-        }
+        for (BulletController bc : bullets) models.add(bc.getModel());
         return models; 
     }
     public List<ItemModel>    getItems()    { 
         List<ItemModel> models = new ArrayList<>();
-        for (ItemController ic : items) {
-            models.add(ic.getModel());
-        }
+        for (ItemController ic : items) models.add(ic.getModel());
         return models; 
     }
+    public SkillController getSkillController() { return skillController; }
 }

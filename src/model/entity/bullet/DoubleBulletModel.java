@@ -1,13 +1,10 @@
 package model.entity.bullet;
-/**
- * DoubleBulletModel - Đạn đôi của player
- * 2 viên song song, dùng offset để tạo viên trái/phải
- * Class thường extends BulletModel
- */
+
 public class DoubleBulletModel extends BulletModel {
 
-    public static final int WIDTH  = 6;
-    public static final int HEIGHT = 14;
+    // Tiếp tục tăng kích thước đạn
+    public static final int WIDTH  = 16; // Tăng từ 12 lên 16
+    public static final int HEIGHT = 32; // Tăng từ 24 lên 32
 
     public enum Side { LEFT, RIGHT }
 
@@ -15,7 +12,7 @@ public class DoubleBulletModel extends BulletModel {
 
     public DoubleBulletModel(float x, float y, int damage, boolean pierce, Side side) {
         super(x, y, WIDTH, HEIGHT,
-                0f, -8f,
+                0f, -6f, // Giảm tốc độ bay từ -10 xuống -6
                 damage,
                 Owner.PLAYER,
                 pierce);

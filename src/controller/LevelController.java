@@ -22,11 +22,13 @@ public class LevelController implements Updatable {
     private int   chickenSpawnedCount;
     private int   spawnTimer;
     private boolean bossSpawned;
+    private int   currentLevel; // Để theo dõi khi level thay đổi
 
     public LevelController(GameModel gameModel) {
         this.gameModel = gameModel;
         this.chickens  = new ArrayList<>();
         this.random    = new Random();
+        this.currentLevel = gameModel.getLevel();
     }
 
     public void startLevel() {
@@ -34,21 +36,30 @@ public class LevelController implements Updatable {
         chickenSpawnedCount = 0;
         spawnTimer          = 0;
         bossSpawned         = false;
+        currentLevel = gameModel.getLevel();
+        System.out.println("Starting Level: " + currentLevel);
     }
 
     @Override
     public void update() {
         if (!gameModel.isPlaying()) return;
 
+        // Nếu level trong GameModel thay đổi, reset controller cho level mới
+        if (gameModel.getLevel() != currentLevel) {
+            startLevel();
+        }
+
         LevelConfig config = LevelConfig.get(gameModel.getLevel());
 
-        // Spawn gà
-        if (chickenSpawnedCount < config.getNormalCount() + config.getEggCount()) {
+        // --- Spawn logic ---
+        int totalToSpawn = config.getNormalCount() + config.getEggCount();
+        
+        if (chickenSpawnedCount < totalToSpawn) {
             if (spawnTimer > 0) {
                 spawnTimer--;
             } else {
                 spawnOneChicken(config);
-                spawnTimer = 60; // 1s
+                spawnTimer = 60; // 1s spawn 1 con
             }
         } else if (config.hasBoss() && !bossSpawned && chickens.isEmpty()) {
             // Hết gà thường -> Gọi boss
@@ -57,7 +68,7 @@ public class LevelController implements Updatable {
             bossSpawned = true;
         }
 
-        // Update movement
+        // --- Update chickens ---
         Iterator<ChickenController> it = chickens.iterator();
         while (it.hasNext()) {
             ChickenController c = it.next();
@@ -68,21 +79,30 @@ public class LevelController implements Updatable {
             c.update();
         }
 
-        // Check clear
+        // --- Check Level Clear ---
         boolean allDead = chickens.isEmpty();
-        boolean spawnedAll = chickenSpawnedCount >= (config.getNormalCount() + config.getEggCount());
+        boolean spawnedAll = chickenSpawnedCount >= totalToSpawn;
         boolean bossDone   = !config.hasBoss() || (bossSpawned && allDead);
 
         if (spawnedAll && allDead && bossDone) {
+            // Chỉ gọi nextLevel() một lần
             gameModel.nextLevel();
-            startLevel();
+            // startLevel() sẽ được gọi ở đầu vòng update kế tiếp do check (gameModel.getLevel() != currentLevel)
         }
     }
 
     private void spawnOneChicken(LevelConfig config) {
         float x = 50 + random.nextInt(700);
         float y = 50 + random.nextInt(200);
-        boolean isEgg = random.nextBoolean() && config.getEggCount() > 0;
+        
+        // Tính toán tỉ lệ spawn trứng dựa trên config
+        // Nếu đã spawn hết gà thường, thì bắt buộc là gà trứng, và ngược lại
+        int totalToSpawn = config.getNormalCount() + config.getEggCount();
+        
+        // Ở đây ta đơn giản hóa logic spawn: 
+        // Nếu level có eggCount > 0, random giữa thường và trứng
+        boolean canSpawnEgg = config.getEggCount() > 0;
+        boolean isEgg = canSpawnEgg && random.nextBoolean();
 
         if (isEgg) {
              EggChickenModel cm = new EggChickenModel(x, y);
