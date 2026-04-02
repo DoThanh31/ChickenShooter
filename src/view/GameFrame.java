@@ -1,6 +1,7 @@
 package view;
 
 import controller.GameController;
+import util.SoundManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +17,7 @@ public class GameFrame extends JFrame {
     private final GameController gameController;
     private final GamePanel gamePanel;
     private final MenuPanel menuPanel;
+    private final SettingsPanel settingsPanel;
     private final CardLayout cardLayout;
     private final JPanel container;
     private Timer gameTimer;
@@ -29,13 +31,21 @@ public class GameFrame extends JFrame {
         gameController = new GameController();
         gamePanel = new GamePanel(gameController);
         
+        // --- MENU PANEL ---
         menuPanel = new MenuPanel(
             e -> startGame(),
+            e -> cardLayout.show(container, "SETTINGS"), // Nút chuyển sang Settings
             e -> System.exit(0)
+        );
+
+        // --- SETTINGS PANEL ---
+        settingsPanel = new SettingsPanel(
+            e -> cardLayout.show(container, "MENU") // Nút Back về Menu
         );
 
         container.add(menuPanel, "MENU");
         container.add(gamePanel, "GAME");
+        container.add(settingsPanel, "SETTINGS");
 
         setTitle("Chicken Shooter");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,62 +55,60 @@ public class GameFrame extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        cardLayout.show(container, "MENU");
+        showMenu();
         setupGameLoop();
+    }
+
+    private void showMenu() {
+        cardLayout.show(container, "MENU");
+        SoundManager.getInstance().playBGM("assets/sounds/Game_Menu_Music.wav");
     }
 
     private void startGame() {
         cardLayout.show(container, "GAME");
         gamePanel.requestFocusInWindow();
-        
+        SoundManager.getInstance().playBGM("assets/sounds/Game_Music.wav");
         gameController.startGame();
         gameTimer.start();
-        
         setupInput();
     }
 
     private void setupInput() {
-        // Xóa listener cũ
         for (var kl : gamePanel.getKeyListeners()) gamePanel.removeKeyListener(kl);
         for (var ml : gamePanel.getMouseListeners()) gamePanel.removeMouseListener(ml);
 
-        // --- Keyboard Input ---
         gamePanel.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 pressedKeys.add(e.getKeyCode());
-
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     gameTimer.stop();
-                    cardLayout.show(container, "MENU");
+                    menuPanel.refreshHighScore();
+                    showMenu();
                 } else if (e.getKeyCode() == KeyEvent.VK_P) {
                     if (gameController.getGameModel().isPause()) gameController.getGameModel().resume();
                     else gameController.getGameModel().pause();
                 } else if (e.getKeyCode() == KeyEvent.VK_R) {
-                    if (gameController.getGameModel().isGameOver()) gameController.startGame();
+                    if (gameController.getGameModel().isGameOver()) {
+                        gameController.startGame();
+                        SoundManager.getInstance().playBGM("assets/sounds/Game_Music.wav");
+                    }
                 }
             }
-
             @Override
             public void keyReleased(KeyEvent e) {
                 pressedKeys.remove(e.getKeyCode());
             }
         });
 
-        // --- Mouse Input (Click to Shoot) ---
         gamePanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (SwingUtilities.isLeftMouseButton(e)) {
-                    gameController.setShooting(true);
-                }
+                if (SwingUtilities.isLeftMouseButton(e)) gameController.setShooting(true);
             }
-
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (SwingUtilities.isLeftMouseButton(e)) {
-                    gameController.setShooting(false);
-                }
+                if (SwingUtilities.isLeftMouseButton(e)) gameController.setShooting(false);
             }
         });
     }
@@ -108,8 +116,7 @@ public class GameFrame extends JFrame {
     private void processMovement() {
         float px = gameController.getPlayer().getX();
         float py = gameController.getPlayer().getY();
-        int speed = 4; // Tiếp tục giảm tốc độ từ 5 xuống 4
-
+        int speed = 4;
         if (pressedKeys.contains(KeyEvent.VK_LEFT))  gameController.getPlayer().setX(px - speed);
         if (pressedKeys.contains(KeyEvent.VK_RIGHT)) gameController.getPlayer().setX(px + speed);
         if (pressedKeys.contains(KeyEvent.VK_UP))    gameController.getPlayer().setY(py - speed);

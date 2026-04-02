@@ -1,9 +1,12 @@
 package model.entity.chicken;
 
+/**
+ * BossChickenModel - Boss mạnh mẽ với nhiều kỹ năng
+ */
 public class BossChickenModel extends model.entity.chicken.ChickenModel {
 
-    public static final int WIDTH  = 100;
-    public static final int HEIGHT = 90;
+    public static final int WIDTH  = 120; // Tăng kích thước
+    public static final int HEIGHT = 110;
 
     public enum Phase { ONE, TWO, THREE }
 
@@ -20,33 +23,35 @@ public class BossChickenModel extends model.entity.chicken.ChickenModel {
     private int shieldTimer;
 
     private boolean shieldActive;
-    private int     shieldDuration; // frames khiên còn lại
+    private int     shieldDuration;
 
     public BossChickenModel(float x, float y, int level) {
         super(x, y,
                 WIDTH, HEIGHT,
-                calcHp(level),   // maxHp theo level
-                1.0f,            // speed
-                5000,            // scoreValue
-                60);             // shootDelay
+                calcHp(level),   // HP đã trâu hơn
+                0.8f,            // speed cơ bản chậm lại tí cho uy lực
+                10000,           // scoreValue
+                50);             // shootDelay
 
         this.phase = Phase.ONE;
         initSkillCooldowns();
     }
 
     private static int calcHp(int level) {
+        // Tăng máu cho Boss (Trâu hơn đáng kể)
         return switch (level) {
-            case 3  -> 50;
-            case 4  -> 80;
-            default -> 120; // level 5+
+            case 3  -> 200; // Tăng từ 50 lên 200
+            case 4  -> 350; // Tăng từ 80 lên 350
+            case 5  -> 500; // Tăng lên 500
+            default -> 600; 
         };
     }
 
     private void initSkillCooldowns() {
-        spreadCooldown = 180;  // 3s
-        laserCooldown  = 300;  // 5s
-        summonCooldown = 360;  // 6s
-        shieldCooldown = 420;  // 7s
+        spreadCooldown = 120;  // 2s (Nhanh hơn)
+        laserCooldown  = 240;  // 4s 
+        summonCooldown = 400;  // 6.5s
+        shieldCooldown = 480;  // 8s
 
         spreadTimer = spreadCooldown;
         laserTimer  = laserCooldown;
@@ -60,6 +65,8 @@ public class BossChickenModel extends model.entity.chicken.ChickenModel {
     @Override
     public void move() {
         x += speed * moveDir;
+        // Dao động nhẹ theo trục Y
+        y += (float) Math.sin(System.currentTimeMillis() / 500.0) * 0.5f;
     }
 
     @Override
@@ -67,24 +74,18 @@ public class BossChickenModel extends model.entity.chicken.ChickenModel {
         return shootTimer <= 0;
     }
 
-    // ── Phase ─────────────────────────────────────────────────
-
-    /** Cập nhật phase dựa trên % máu hiện tại */
     public void updatePhase() {
         float ratio = getHpRatio();
-        if      (ratio > 0.5f) phase = Phase.ONE;
-        else if (ratio > 0.2f) phase = Phase.TWO;
+        if      (ratio > 0.6f) phase = Phase.ONE;
+        else if (ratio > 0.3f) phase = Phase.TWO;
         else                   phase = Phase.THREE;
 
-        // Phase 2+ tăng tốc độ
         speed = switch (phase) {
-            case ONE   -> 1.0f;
-            case TWO   -> 1.8f;
-            case THREE -> 2.5f;
+            case ONE   -> 0.8f;
+            case TWO   -> 1.5f;
+            case THREE -> 2.2f;
         };
     }
-
-    // ── Skill timers ─────────────────────────────────────────
 
     public void tickSkills() {
         if (spreadTimer > 0) spreadTimer--;
@@ -98,16 +99,16 @@ public class BossChickenModel extends model.entity.chicken.ChickenModel {
     }
 
     public boolean canSpread() { return spreadTimer <= 0; }
-    public boolean canLaser()  { return laserTimer  <= 0 && phase != Phase.ONE; }
+    public boolean canLaser()  { return laserTimer  <= 0; } // Luôn dùng laser ở mọi phase
     public boolean canSummon() { return summonTimer <= 0; }
     public boolean canShieldSkill() {
-        return shieldTimer <= 0 && !shieldActive && phase == Phase.THREE;
+        return shieldTimer <= 0 && !shieldActive && (phase == Phase.TWO || phase == Phase.THREE);
     }
 
-    public void resetSpread() { spreadTimer = switch(phase){
-        case ONE -> spreadCooldown; case TWO -> 120; default -> 80; }; }
+    public void resetSpread() { spreadTimer = spreadCooldown; }
     public void resetLaser()  { laserTimer  = laserCooldown;  }
     public void resetSummon() { summonTimer = summonCooldown; }
+    
     public void activateShield(int frames) {
         shieldActive   = true;
         shieldDuration = frames;
@@ -116,7 +117,7 @@ public class BossChickenModel extends model.entity.chicken.ChickenModel {
 
     @Override
     public void takeDamage(int damage) {
-        if (shieldActive) return; // khiên chặn damage
+        if (shieldActive) return;
         super.takeDamage(damage);
         updatePhase();
     }
@@ -128,8 +129,6 @@ public class BossChickenModel extends model.entity.chicken.ChickenModel {
         initSkillCooldowns();
     }
 
-    // ── Getter ────────────────────────────────────────────────
-
     public Phase   getPhase()         { return phase; }
     public boolean isShieldActive()   { return shieldActive; }
     public int     getSpreadTimer()   { return spreadTimer; }
@@ -137,4 +136,3 @@ public class BossChickenModel extends model.entity.chicken.ChickenModel {
     public int     getSummonTimer()   { return summonTimer; }
     public int     getShieldTimer()   { return shieldTimer; }
 }
-

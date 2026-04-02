@@ -1,20 +1,21 @@
 package model.entity.bullet;
+
 /**
  * ChickenBulletModel - Đạn của gà / boss bắn xuống
- * Hỗ trợ đạn thẳng (gà thường/trứng) và đạn góc (boss spread)
- *  Class thường extends BulletModel
+ * Đã được tăng kích thước để nhìn rõ hơn
  */
 public class ChickenBulletModel extends BulletModel {
 
-    public static final int WIDTH  = 8;
-    public static final int HEIGHT = 8;
+    // Tăng kích thước đạn gà lên gấp đôi (từ 8 lên 16)
+    public static final int WIDTH  = 24;
+    public static final int HEIGHT = 24;
 
     public ChickenBulletModel(float x, float y, float speedX, float speedY, Owner owner) {
         super(x, y, WIDTH, HEIGHT,
                 speedX, speedY,
                 1,        // damage
                 owner,
-                false);   // không xuyên
+                false);   
     }
 
     /** Đạn thẳng xuống từ gà thường / gà trứng */
@@ -33,4 +34,3 @@ public class ChickenBulletModel extends BulletModel {
         y += speedY;
     }
 }
-

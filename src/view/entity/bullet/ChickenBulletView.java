@@ -7,7 +7,7 @@ import java.awt.*;
 public class ChickenBulletView extends BulletView {
 
     public ChickenBulletView(ChickenBulletModel model) {
-        super(model, "assets/images/bullet_chicken.png");
+        super(model, "assets/images/egg.png");
     }
 
     @Override

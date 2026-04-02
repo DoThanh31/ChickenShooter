@@ -13,10 +13,13 @@ import model.entity.bullet.SingleBulletModel;
 import model.entity.chicken.BossChickenModel;
 import model.entity.chicken.ChickenModel;
 import model.entity.chicken.EggChickenModel;
+import model.entity.egg.BabyChickenModel;
+import model.entity.egg.EggModel;
 import model.item.ItemModel;
 import model.item.PowerUpModel;
 import model.item.WeaponItemModel;
 import model.weapon.WeaponType;
+import util.SoundManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,7 +38,8 @@ public class GameController implements Updatable {
 
     private final Random random;
 
-    private boolean isShooting = false; // Trạng thái nhấn chuột để bắn
+    private boolean isShooting = false;
+    private boolean isFinishedSoundPlayed = false;
 
     private static final int GAME_WIDTH  = 800;
     private static final int GAME_HEIGHT = 600;
@@ -57,15 +61,38 @@ public class GameController implements Updatable {
         bullets.clear();
         items.clear();
         levelController.startLevel();
+        isFinishedSoundPlayed = false;
     }
 
     @Override
     public void update() {
-        if (gameModel.isPause() || gameModel.isGameOver()) return;
+        // Cập nhật logic Phase của GameModel (để chuyển từ LEVELUP sang PLAYING)
+        gameModel.update();
+
+        if (gameModel.isPause()) return;
+
+        // Nếu đang hiển thị màn hình Level Up thì tạm dừng logic game chính
+        if (gameModel.isLevelUp()) {
+            bullets.clear(); // Xóa đạn cũ khi qua màn cho đẹp
+            return;
+        }
+
+        if (gameModel.isGameOver()) {
+            if (!isFinishedSoundPlayed) {
+                if (gameModel.getPhase() == GameModel.Phase.WIN) {
+                    SoundManager.getInstance().stopBGM();
+                    SoundManager.getInstance().play("win");
+                } else {
+                    SoundManager.getInstance().stopBGM();
+                    SoundManager.getInstance().play("game_over");
+                }
+                isFinishedSoundPlayed = true;
+            }
+            return;
+        }
 
         playerController.update();
         
-        // CHỈ BẮN KHI ĐANG NHẤN CHUỘT (isShooting = true)
         if (isShooting && getPlayer().canShoot()) {
             firePlayerBullet();
             getPlayer().resetShootTimer();
@@ -94,11 +121,6 @@ public class GameController implements Updatable {
             if (c.canShoot()) {
                 if (c instanceof BossChickenModel boss) {
                     skillController.updateBossSkills(boss, getBulletModelListFromControllers(bullets));
-                } else if (c instanceof EggChickenModel eggC) {
-                    if (eggC.canDropEgg()) {
-                        bullets.add(new BulletController(ChickenBulletModel.straight(eggC.getCenterX(), eggC.getY() + eggC.getH())));
-                        eggC.resetEggTimer();
-                    }
                 } else {
                     bullets.add(new BulletController(ChickenBulletModel.straight(c.getCenterX(), c.getY() + c.getH())));
                 }
@@ -150,6 +172,8 @@ public class GameController implements Updatable {
             bullets.add(new BulletController(new DoubleBulletModel(px - 10, py, damage, pierce, DoubleBulletModel.Side.LEFT)));
             bullets.add(new BulletController(new DoubleBulletModel(px + 4,  py, damage, pierce, DoubleBulletModel.Side.RIGHT)));
         }
+        
+        SoundManager.getInstance().play("shoot");
     }
 
     private void spawnItem(float x, float y, int scoreValue) {
@@ -171,12 +195,14 @@ public class GameController implements Updatable {
 
     private void checkCollisions() {
         List<ChickenModel> chickens = levelController.getChickens();
+        List<EggModel> eggs = levelController.getActiveEggs();
 
         if (skillController.getLaserSkill().isActive()) {
             float laserY = skillController.getLaserSkill().getTargetY();
             int laserH = 15;
             if (getPlayer().getY() < laserY + laserH && getPlayer().getY() + getPlayer().getH() > laserY) {
                 getPlayer().takeDamage(1);
+                SoundManager.getInstance().play("hit");
             }
         }
 
@@ -189,14 +215,29 @@ public class GameController implements Updatable {
                 for (ChickenModel c : chickens) {
                     if (c.isAlive() && c.collidesWith(b)) {
                         c.takeDamage(b.getDamage());
-                        if (!c.isAlive()) spawnItem(c.getX(), c.getY(), c.getScoreValue());
+                        if (!c.isAlive()) {
+                            spawnItem(c.getX(), c.getY(), c.getScoreValue());
+                            SoundManager.getInstance().play(c instanceof BossChickenModel ? "boss_die" : "chicken_die");
+                        }
                         hit = true;
                         if (!b.isPierce()) break;
+                    }
+                }
+                
+                if (!hit || b.isPierce()) {
+                    for (EggModel egg : eggs) {
+                        if (egg.isAlive() && egg.collidesWith(b)) {
+                            egg.takeDamage(b.getDamage()); 
+                            if (!egg.isAlive()) SoundManager.getInstance().play("egg_break");
+                            hit = true;
+                            if (!b.isPierce()) break;
+                        }
                     }
                 }
             } else {
                 if (getPlayer().isAlive() && getPlayer().collidesWith(b)) {
                     getPlayer().takeDamage(b.getDamage());
+                    SoundManager.getInstance().play("hit");
                     hit = true;
                 }
             }
@@ -213,6 +254,7 @@ public class GameController implements Updatable {
                 } else {
                     item.applyEffect(getPlayer());
                 }
+                SoundManager.getInstance().play("item");
                 iIt.remove();
             }
         }
@@ -221,6 +263,7 @@ public class GameController implements Updatable {
             if (c.isAlive() && getPlayer().isAlive() && c.collidesWith(getPlayer())) {
                 getPlayer().takeDamage(1);
                 c.takeDamage(999); 
+                SoundManager.getInstance().play("hit");
             }
         }
     }
@@ -228,6 +271,7 @@ public class GameController implements Updatable {
     public GameModel       getGameModel() { return gameModel; }
     public PlayerModel     getPlayer()    { return playerController.getModel(); }
     public List<ChickenModel> getChickens() { return levelController.getChickens(); }
+    public List<EggModel>     getActiveEggs() { return levelController.getActiveEggs(); }
     public List<BulletModel>  getBullets()  { 
         List<BulletModel> models = new ArrayList<>();
         for (BulletController bc : bullets) models.add(bc.getModel());

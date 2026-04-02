@@ -6,25 +6,27 @@ public class LevelConfig {
     private final int   level;
     private final int   normalCount;
     private final int   eggCount;
+    private final int   fallingEggCount; // Số lượng trứng tự rơi (mới)
     private final boolean hasBoss;
     private final float chickenSpeed;
 
     // Cấu hình cố định cho từng level
     private static final LevelConfig[] CONFIGS = {
-            new LevelConfig(1,  8, 0, false, 1.0f),
-            new LevelConfig(2, 10, 0, false, 1.3f),
-            new LevelConfig(3,  8, 3, false,  1.5f),
-            new LevelConfig(4,  6, 4, false,  1.8f),
-            new LevelConfig(5,  4, 4, true,  2.0f),
+            new LevelConfig(1,  8, 0, 0, false, 1.0f),
+            new LevelConfig(2, 10, 0, 0, false, 1.3f),
+            new LevelConfig(3,  0, 0, 15, false, 1.5f), // LEVEL 3: CHỈ TRỨNG RƠI (15 quả)
+            new LevelConfig(4,  8, 4, 10, false,  1.8f),
+            new LevelConfig(5,  4, 4, 10, true,  2.0f),
     };
 
-    private LevelConfig(int level, int normalCount, int eggCount,
+    private LevelConfig(int level, int normalCount, int eggCount, int fallingEggCount,
                         boolean hasBoss, float chickenSpeed) {
-        this.level        = level;
-        this.normalCount  = normalCount;
-        this.eggCount     = eggCount;
-        this.hasBoss      = hasBoss;
-        this.chickenSpeed = chickenSpeed;
+        this.level           = level;
+        this.normalCount     = normalCount;
+        this.eggCount        = eggCount;
+        this.fallingEggCount = fallingEggCount;
+        this.hasBoss         = hasBoss;
+        this.chickenSpeed    = chickenSpeed;
     }
 
     public static LevelConfig get(int level) {
@@ -33,9 +35,10 @@ public class LevelConfig {
     }
 
     // ── Getter ────────────────────────────────────────────────
-    public int     getLevel()        { return level; }
-    public int     getNormalCount()  { return normalCount; }
-    public int     getEggCount()     { return eggCount; }
-    public boolean hasBoss()         { return hasBoss; }
-    public float   getChickenSpeed() { return chickenSpeed; }
+    public int     getLevel()           { return level; }
+    public int     getNormalCount()     { return normalCount; }
+    public int     getEggCount()        { return eggCount; }
+    public int     getFallingEggCount() { return fallingEggCount; }
+    public boolean hasBoss()            { return hasBoss; }
+    public float   getChickenSpeed()    { return chickenSpeed; }
 }

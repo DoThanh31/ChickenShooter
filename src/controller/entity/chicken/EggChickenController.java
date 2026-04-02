@@ -1,11 +1,15 @@
 package controller.entity.chicken;
 
+import controller.LevelController;
 import model.entity.chicken.EggChickenModel;
 
 public class EggChickenController extends ChickenController {
 
-    public EggChickenController(EggChickenModel model) {
+    private final LevelController levelController; // Cần LevelController để thêm trứng
+
+    public EggChickenController(EggChickenModel model, LevelController levelController) {
         super(model);
+        this.levelController = levelController;
     }
 
     @Override
@@ -21,6 +25,13 @@ public class EggChickenController extends ChickenController {
     @Override
     protected void shoot() {
         model.tickShoot();
-        ((EggChickenModel) model).tickEgg();
+        EggChickenModel eggChicken = (EggChickenModel) model;
+        eggChicken.tickEgg();
+
+        // Gà trứng thả trứng (không phải bắn đạn)
+        if (eggChicken.canDropEgg()) {
+            levelController.addDroppedEgg(eggChicken.getCenterX(), eggChicken.getY() + eggChicken.getH());
+            eggChicken.resetEggTimer();
+        }
     }
 }

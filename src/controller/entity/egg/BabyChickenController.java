@@ -3,6 +3,9 @@ package controller.entity.egg;
 import controller.entity.chicken.ChickenController;
 import model.entity.egg.BabyChickenModel;
 
+/**
+ * BabyChickenController - Điều khiển logic cho gà con
+ */
 public class BabyChickenController extends ChickenController {
 
     public BabyChickenController(BabyChickenModel model) {
@@ -12,9 +15,8 @@ public class BabyChickenController extends ChickenController {
     @Override
     protected void move() {
         model.move();
-
-        // Gà con (BabyChicken) di chuyển ngang rất nhanh và có thể đảo chiều khi chạm viền.
-        // Giả sử màn hình có width là 800
+        
+        // Gà con cũng di chuyển ngang và đổi chiều khi chạm biên
         if (model.getX() <= 0 || model.getX() + model.getW() >= 800) {
             model.reverseDir();
         }
@@ -22,6 +24,8 @@ public class BabyChickenController extends ChickenController {
 
     @Override
     protected void shoot() {
+        // Gà con có thể bắn đạn (nếu muốn)
         model.tickShoot();
+        // Logic bắn đạn của gà con sẽ được xử lý ở GameController
     }
 }

@@ -17,7 +17,7 @@ public class PowerUpView {
             case HEAL -> "assets/images/item_hp.png";
             case SHIELD -> "assets/images/item_shield.png";
             case DAMAGE_UP -> "assets/images/item_weapon.png";
-            case SCORE_DRUMSTICK -> "assets/images/item_chicken_leg.png"; // đùi gà
+            case SCORE_DRUMSTICK -> "assets/images/item_chicken_leg.png";
         };
         this.image = SpriteLoader.getInstance().load(path);
     }

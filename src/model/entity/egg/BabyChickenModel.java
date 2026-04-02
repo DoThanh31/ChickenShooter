@@ -4,14 +4,13 @@ import model.entity.chicken.ChickenModel;
 
 /**
  * BabyChickenModel - Gà con nở từ trứng
- * HP: 1 | Nhỏ | Di chuyển nhanh ngang | Bắn lên player
- * ke thua tu ChickenModel
+ * Đã tăng kích thước để dễ nhìn hơn
  */
-
 public class BabyChickenModel extends ChickenModel {
 
-    public static final int WIDTH  = 24;
-    public static final int HEIGHT = 22;
+    // Tăng kích thước gà con từ (24x22) lên (40x36)
+    public static final int WIDTH  = 40;
+    public static final int HEIGHT = 36;
 
     public BabyChickenModel(float x, float y) {
         super(x, y,

@@ -51,6 +51,7 @@ public class PlayerModel extends EntityModel {
         }
         super.takeDamage(damage);
         if (!alive && lives > 0) loseLife();
+
     }
 
     public void activateShield(int frames) {

@@ -25,75 +25,69 @@ public class BossSkillController {
     public void update() {
         if (!boss.isAlive()) return;
 
-        // Cập nhật các bộ đếm kỹ năng trong model boss
         boss.tickSkills();
 
         float bx = boss.getCenterX();
         float by = boss.getY() + boss.getH();
 
-        // 1. Skill: Spread Shot (Bắn tỏa)
+        // 1. Skill: Bắn tỏa đạn chùm (Nhiều đạn hơn)
         if (boss.canSpread()) {
-            performSpreadShot(bx, by);
+            performClusterShot(bx, by);
             boss.resetSpread();
         }
 
-        // 2. Skill: Laser (Tia laser nhanh)
+        // 2. Skill: Laser (Hiện tại dùng Laser Shot nhanh và nhiều chỗ)
         if (boss.canLaser()) {
-            performLaserShot(bx, by);
+            performMultiLaserShot(bx, by);
             boss.resetLaser();
         }
 
-        // 3. Skill: Summon (Triệu hồi gà con)
+        // 3. Skill: Summon (Triệu hồi)
         if (boss.canSummon()) {
-            performSummon();
+            performSummonShot(bx, by);
             boss.resetSummon();
         }
 
-        // 4. Skill: Shield (Boss tự bật khiên khi đủ điều kiện - Phase THREE)
+        // 4. Skill: Shield
         if (boss.canShieldSkill()) {
             boss.activateShield(300); // 5 giây
         }
     }
 
-    private void performSpreadShot(float bx, float by) {
-        switch (boss.getPhase()) {
-            case ONE -> {
-                bullets.add(ChickenBulletModel.angled(bx, by, -2f, 4f));
-                bullets.add(ChickenBulletModel.angled(bx, by, 0f, 4f));
-                bullets.add(ChickenBulletModel.angled(bx, by, 2f, 4f));
-            }
-            case TWO -> {
-                bullets.add(ChickenBulletModel.angled(bx, by, -3f, 5f));
-                bullets.add(ChickenBulletModel.angled(bx, by, -1f, 5f));
-                bullets.add(ChickenBulletModel.angled(bx, by, 1f, 5f));
-                bullets.add(ChickenBulletModel.angled(bx, by, 3f, 5f));
-            }
-            case THREE -> {
-                for (float sx = -5f; sx <= 5f; sx += 2.5f) {
-                    bullets.add(ChickenBulletModel.angled(bx, by, sx, 4f));
-                }
-            }
+    private void performClusterShot(float bx, float by) {
+        // Bắn chùm đạn tỏa đều 
+        int bulletCount = (boss.getPhase() == BossChickenModel.Phase.ONE) ? 5 : 8;
+        float startSpeedX = -4.0f;
+        float stepX = 8.0f / (bulletCount - 1);
+
+        for (int i = 0; i < bulletCount; i++) {
+            bullets.add(ChickenBulletModel.angled(bx, by, startSpeedX + (i * stepX), 4f));
         }
     }
 
-    private void performLaserShot(float bx, float by) {
-        // Bắn 1 loạt đạn tốc độ cao hướng thẳng vào Player
-        bullets.add(ChickenBulletModel.angled(bx - 20, by, 0f, 10f));
-        bullets.add(ChickenBulletModel.angled(bx, by, 0f, 12f));
-        bullets.add(ChickenBulletModel.angled(bx + 20, by, 0f, 10f));
+    private void performMultiLaserShot(float bx, float by) {
+        // Bắn đạn laser nhanh tại 3 điểm khác nhau của Boss
+        bullets.add(ChickenBulletModel.angled(bx - 40, by, 0f, 12f));
+        bullets.add(ChickenBulletModel.angled(bx, by, 0f, 15f)); // Viên ở giữa nhanh nhất
+        bullets.add(ChickenBulletModel.angled(bx + 40, by, 0f, 12f));
+        
+        // Nếu ở Phase 3, bắn thêm 2 tia chéo nhanh
+        if (boss.getPhase() == BossChickenModel.Phase.THREE) {
+            bullets.add(ChickenBulletModel.angled(bx - 50, by, -3f, 10f));
+            bullets.add(ChickenBulletModel.angled(bx + 50, by, 3f, 10f));
+        }
     }
 
-    private void performSummon() {
-        // Logic này có thể được mở rộng để thêm gà con vào LevelController thông qua Callback
-        // Tạm thời bắn 2 quả trứng lớn (Egg) đại diện cho summon
-        bullets.add(ChickenBulletModel.angled(boss.getX(), boss.getY() + 20, -1f, 3f));
-        bullets.add(ChickenBulletModel.angled(boss.getX() + boss.getW(), boss.getY() + 20, 1f, 3f));
+    private void performSummonShot(float bx, float by) {
+        // Bắn trứng đặc biệt (sẽ nở ra gà con khi vỡ hoặc chạm đích)
+        // Hiện tại dùng đạn gà để đại diện cho việc "thả trứng"
+        bullets.add(ChickenBulletModel.angled(bx - 30, by, -1.5f, 3f));
+        bullets.add(ChickenBulletModel.angled(bx + 30, by, 1.5f, 3f));
     }
 
-    /** Trả về tỷ lệ cooldown kỹ năng Spread (để hiển thị HUD) */
     public float getCooldownProgress() {
         if (boss == null) return 0f;
-        return 1.0f - (float) boss.getSpreadTimer() / 180.0f;
+        return 1.0f - (float) boss.getSpreadTimer() / 120.0f;
     }
 
     public BossChickenModel getBoss() {

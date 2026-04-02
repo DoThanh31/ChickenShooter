@@ -10,12 +10,10 @@ public class PlayerView {
 
     private final PlayerModel model;
     private final BufferedImage image;
-    private final BufferedImage shieldImage;
 
     public PlayerView(PlayerModel model) {
         this.model = model;
         this.image = SpriteLoader.getInstance().load("assets/images/plane.png");
-        this.shieldImage = SpriteLoader.getInstance().load("assets/images/shield_effect.png");
     }
 
     public void draw(Graphics2D g) {
@@ -26,6 +24,7 @@ public class PlayerView {
         int w = model.getW();
         int h = model.getH();
 
+        // 1. Vẽ Phi thuyền
         if (image != null) {
             g.drawImage(image, x, y, w, h, null);
         } else {
@@ -33,14 +32,27 @@ public class PlayerView {
             g.fillRect(x, y, w, h);
         }
 
-        // Vẽ khiên nếu đang kích hoạt
+        // 2. Vẽ Khiên (Shield) bằng tay
         if (model.isShieldActive()) {
-            if (shieldImage != null) {
-                g.drawImage(shieldImage, x - 5, y - 5, w + 10, h + 10, null);
-            } else {
-                g.setColor(new Color(0, 255, 255, 100));
-                g.fillOval(x - 5, y - 5, w + 10, h + 10);
-            }
+            drawShieldEffect(g, x, y, w, h);
         }
+    }
+
+    /** Vẽ hiệu ứng khiên bảo vệ thủ công bằng vòng tròn tỏa sáng */
+    private void drawShieldEffect(Graphics2D g, int x, int y, int w, int h) {
+        Graphics2D g2d = (Graphics2D) g.create();
+        
+        // Tạo hiệu ứng vòng tròn xanh nhạt trong suốt bao quanh
+        g2d.setColor(new Color(0, 255, 255, 120));
+        g2d.setStroke(new BasicStroke(3)); // Độ dày của vòng khiên
+        
+        int offset = 10;
+        g2d.drawOval(x - offset, y - offset, w + offset * 2, h + offset * 2);
+        
+        // Thêm một vòng mờ hơn bên ngoài
+        g2d.setColor(new Color(0, 255, 255, 60));
+        g2d.drawOval(x - offset - 4, y - offset - 4, w + (offset + 4) * 2, h + (offset + 4) * 2);
+        
+        g2d.dispose();
     }
 }

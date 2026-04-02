@@ -9,6 +9,8 @@ import model.entity.chicken.BossChickenModel;
 import model.entity.chicken.ChickenModel;
 import model.entity.chicken.EggChickenModel;
 import model.entity.chicken.NormalChickenModel;
+import model.entity.egg.BabyChickenModel;
+import model.entity.egg.EggModel;
 import model.item.ItemModel;
 import model.item.PowerUpModel;
 import model.item.WeaponItemModel;
@@ -21,6 +23,8 @@ import view.entity.chicken.BossChickenView;
 import view.entity.chicken.ChickenView;
 import view.entity.chicken.EggChickenView;
 import view.entity.chicken.NormalChickenView;
+import view.entity.egg.BabyChickenView;
+import view.entity.egg.EggView;
 import view.hub.HUDView;
 import view.item.PowerUpView;
 import view.item.WeaponItemView;
@@ -41,9 +45,8 @@ public class GamePanel extends JPanel {
     private BufferedImage backgroundImg;
     private int bgY1 = 0;
     private int bgY2 = -HEIGHT;
-    private final int bgSpeed = 2; // Tốc độ trôi của nền
+    private final int bgSpeed = 2;
 
-    // View components
     private final PlayerView playerView;
     private final HUDView hudView;
     private final GameController gameController;
@@ -66,11 +69,9 @@ public class GamePanel extends JPanel {
         }
     }
 
-    /** Cập nhật vị trí background tạo hiệu ứng vô tận */
     public void updateBackground() {
         bgY1 += bgSpeed;
         bgY2 += bgSpeed;
-
         if (bgY1 >= HEIGHT) bgY1 = -HEIGHT;
         if (bgY2 >= HEIGHT) bgY2 = -HEIGHT;
     }
@@ -80,47 +81,47 @@ public class GamePanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
-        // Vẽ Background trôi (sử dụng 2 tấm ảnh nối đuôi nhau)
         if (backgroundImg != null) {
             g2d.drawImage(backgroundImg, 0, bgY1, WIDTH, HEIGHT, null);
             g2d.drawImage(backgroundImg, 0, bgY2, WIDTH, HEIGHT, null);
         }
 
-        // Vẽ Player
         playerView.draw(g2d);
 
-        // Vẽ Đạn
+        // Đạn
         List<BulletModel> bullets = gameController.getBullets();
         for (BulletModel b : bullets) {
             BulletView bv = getBulletView(b);
             if (bv != null) bv.draw(g2d);
         }
 
-        // Vẽ Gà
-        List<ChickenModel> chickens = gameController.getChickens();
-        for (ChickenModel c : chickens) {
-            ChickenView cv = getChickenView(c);
-            if (cv != null) cv.draw(g2d);
+        // Trứng đang rơi
+        List<EggModel> eggs = gameController.getActiveEggs();
+        for (EggModel egg : eggs) {
+            new EggView(egg).draw(g2d);
         }
 
-        // Vẽ Items
+        // Gà
+        List<ChickenModel> chickens = gameController.getChickens();
+        for (ChickenModel c : chickens) {
+            drawChicken(c, g2d);
+        }
+
+        // Items
         List<ItemModel> items = gameController.getItems();
         for (ItemModel item : items) {
             drawItem(item, g2d);
         }
 
-        // Vẽ Laser (Skill Boss)
         laserView.draw(g2d);
-
-        // Vẽ HUD
         hudView.draw(g2d);
     }
 
-    private ChickenView getChickenView(ChickenModel model) {
-        if (model instanceof BossChickenModel) return new BossChickenView((BossChickenModel) model);
-        if (model instanceof EggChickenModel) return new EggChickenView((EggChickenModel) model);
-        if (model instanceof NormalChickenModel) return new NormalChickenView((NormalChickenModel) model);
-        return null;
+    private void drawChicken(ChickenModel model, Graphics2D g2d) {
+        if (model instanceof BossChickenModel) new BossChickenView((BossChickenModel) model).draw(g2d);
+        else if (model instanceof EggChickenModel) new EggChickenView((EggChickenModel) model).draw(g2d);
+        else if (model instanceof BabyChickenModel) new BabyChickenView((BabyChickenModel) model).draw(g2d);
+        else if (model instanceof NormalChickenModel) new NormalChickenView((NormalChickenModel) model).draw(g2d);
     }
 
     private BulletView getBulletView(BulletModel model) {
