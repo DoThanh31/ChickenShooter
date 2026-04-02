@@ -2,7 +2,6 @@ package model.entity.bullet;
 
 public class SingleBulletModel extends BulletModel {
 
-    // Tăng kích thước đạn người chơi to hơn
     public static final int WIDTH  = 24;
     public static final int HEIGHT = 48;
 

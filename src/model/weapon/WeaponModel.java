@@ -5,7 +5,6 @@ public class WeaponModel {
     private WeaponType type;
     private int        level;      // 1 ~ 5
 
-    // Thống số tính theo level
     private int  damage;
     private int  cooldown;
     private boolean pierce;
@@ -16,7 +15,6 @@ public class WeaponModel {
         applyStats();
     }
 
-    // ── Nâng cấp ─────────────────────────────────────────────
 
     public void levelUp() {
         if (level < 5) {

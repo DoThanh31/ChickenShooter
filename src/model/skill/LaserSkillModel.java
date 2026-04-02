@@ -1,14 +1,10 @@
 package model.skill;
-/**
- * LaserSkillModel - Boss bắn tia laser ngang toàn màn hình
- * Kế thừa skillModel
- */
 public class LaserSkillModel extends SkillModel {
 
-    private float targetY; // vị trí Y tia laser (ngang)
+    private float targetY; // vá»‹ trÃ­ Y tia laser (ngang)
 
     public LaserSkillModel() {
-        super("LASER", 300, 90); // cooldown 5s, hoạt động 1.5s
+        super("LASER", 300, 90); // cooldown 5s, hoáº¡t Ä‘á»™ng 1.5s
     }
 
     @Override

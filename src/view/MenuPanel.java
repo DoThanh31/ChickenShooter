@@ -30,7 +30,6 @@ public class MenuPanel extends JPanel {
 
         refreshHighScore();
 
-        // Khá»Ÿi táº¡o cÃ¡c nÃºt vÃ  Ä‘áº©y lui xuá»‘ng dÆ°á»›i má»™t chÃºt
         startButton = createButton("START GAME", 300, 370);
         settingsButton = createButton("SETTING", 300, 430);
         exitButton = createButton("EXIT", 300, 490);
@@ -39,7 +38,6 @@ public class MenuPanel extends JPanel {
         settingsButton.addActionListener(settingsAction);
         exitButton.addActionListener(exitAction);
 
-        // ThÃªm cÃ¡c nÃºt vÃ o panel
         add(startButton);
         add(settingsButton);
         add(exitButton);
@@ -79,7 +77,7 @@ public class MenuPanel extends JPanel {
         int rectW = 300;
         int rectH = 160;
         int rectX = (800 - rectW) / 2;
-        int rectY = 150; // Äáº©y báº£ng Ä‘iá»ƒm xuá»‘ng má»™t chÃºt (tá»« 100 lÃªn 150)
+        int rectY = 150; // Ã„ÂÃ¡ÂºÂ©y bÃ¡ÂºÂ£ng Ã„â€˜iÃ¡Â»Æ’m xuÃ¡Â»â€˜ng mÃ¡Â»â„¢t chÃƒÂºt (tÃ¡Â»Â« 100 lÃƒÂªn 150)
 
         g2d.setColor(new Color(0, 0, 0, 150));
         g2d.fillRoundRect(rectX, rectY, rectW, rectH, 20, 20);

@@ -85,26 +85,22 @@ public class GamePanel extends JPanel {
 
         playerView.draw(g2d);
 
-        // Đạn
         List<BulletModel> bullets = gameController.getBullets();
         for (BulletModel b : bullets) {
             BulletView bv = getBulletView(b);
             if (bv != null) bv.draw(g2d);
         }
 
-        // Trứng đang rơi
         List<EggModel> eggs = gameController.getActiveEggs();
         for (EggModel egg : eggs) {
             new EggView(egg).draw(g2d);
         }
 
-        // Gà
         List<ChickenModel> chickens = gameController.getChickens();
         for (ChickenModel c : chickens) {
             drawChicken(c, g2d);
         }
 
-        // Items
         List<ItemModel> items = gameController.getItems();
         for (ItemModel item : items) {
             drawItem(item, g2d);

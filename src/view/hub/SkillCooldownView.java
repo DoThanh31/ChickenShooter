@@ -23,7 +23,6 @@ public class SkillCooldownView {
         g.setFont(new Font("Arial", Font.BOLD, 12));
         g.drawString("Boss Skill CD:", x - 80, y + barH);
 
-        // Vẽ thanh cooldown
         g.setColor(Color.DARK_GRAY);
         g.fillRect(x, y, barW, barH);
 

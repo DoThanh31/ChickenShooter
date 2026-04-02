@@ -24,7 +24,6 @@ public class PlayerView {
         int w = model.getW();
         int h = model.getH();
 
-        // 1. Vẽ Phi thuyền
         if (image != null) {
             g.drawImage(image, x, y, w, h, null);
         } else {
@@ -32,24 +31,20 @@ public class PlayerView {
             g.fillRect(x, y, w, h);
         }
 
-        // 2. Vẽ Khiên (Shield) bằng tay
         if (model.isShieldActive()) {
             drawShieldEffect(g, x, y, w, h);
         }
     }
 
-    /** Vẽ hiệu ứng khiên bảo vệ thủ công bằng vòng tròn tỏa sáng */
     private void drawShieldEffect(Graphics2D g, int x, int y, int w, int h) {
         Graphics2D g2d = (Graphics2D) g.create();
         
-        // Tạo hiệu ứng vòng tròn xanh nhạt trong suốt bao quanh
         g2d.setColor(new Color(0, 255, 255, 120));
-        g2d.setStroke(new BasicStroke(3)); // Độ dày của vòng khiên
+        g2d.setStroke(new BasicStroke(3)); // Äá»™ dÃ y cá»§a vÃ²ng khiÃªn
         
         int offset = 10;
         g2d.drawOval(x - offset, y - offset, w + offset * 2, h + offset * 2);
         
-        // Thêm một vòng mờ hơn bên ngoài
         g2d.setColor(new Color(0, 255, 255, 60));
         g2d.drawOval(x - offset - 4, y - offset - 4, w + (offset + 4) * 2, h + (offset + 4) * 2);
         

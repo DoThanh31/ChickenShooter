@@ -17,7 +17,7 @@ public abstract class ChickenModel extends EntityModel {
         this.speed      = speed;
         this.moveDir    = 1;
         this.scoreValue = scoreValue;
-        this.shootTimer = shootDelay; // bắt đầu với cooldown đầy
+        this.shootTimer = shootDelay; // báº¯t Ä‘áº§u vá»›i cooldown Ä‘áº§y
         this.shootDelay = shootDelay;
     }
 

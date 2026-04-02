@@ -194,7 +194,6 @@ public class GameController implements Updatable {
         List<ChickenModel> chickens = levelController.getChickens();
         List<EggModel> eggs = levelController.getActiveEggs();
 
-        // --- Bullet Collisions ---
         Iterator<BulletController> bIt = bullets.iterator();
         while (bIt.hasNext()) {
             BulletController bc = bIt.next();
@@ -233,20 +232,17 @@ public class GameController implements Updatable {
             if (hit && !b.isPierce()) bIt.remove();
         }
 
-        // --- Egg vs Player Collision ---
         Iterator<EggModel> eIt = eggs.iterator();
         while (eIt.hasNext()) {
             EggModel egg = eIt.next();
             if (egg.isAlive() && getPlayer().collidesWith(egg)) {
-                getPlayer().takeDamage(1); // Gây dame cho player
-                egg.takeDamage(999); // Trứng vỡ ngay lập tức
+                getPlayer().takeDamage(1); // GÃ¢y dame cho player
+                egg.takeDamage(999); // Trá»©ng vá»¡ ngay láº­p tá»©c
                 SoundManager.getInstance().play("hit");
                 SoundManager.getInstance().play("egg_break");
-                // Khi trứng vỡ do va chạm với player, nó sẽ tự nở ra gà con trong LevelController.updateEggs()
             }
         }
 
-        // --- Item vs Player Collision ---
         Iterator<ItemController> iIt = items.iterator();
         while (iIt.hasNext()) {
             ItemController ic = iIt.next();
@@ -262,7 +258,6 @@ public class GameController implements Updatable {
             }
         }
 
-        // --- Chicken Body vs Player Collision ---
         for (ChickenModel c : chickens) {
             if (c.isAlive() && getPlayer().isAlive() && c.collidesWith(getPlayer())) {
                 getPlayer().takeDamage(1);

@@ -20,7 +20,6 @@ public class BossChickenView extends ChickenView {
         if (!model.isAlive()) return;
         super.draw(g);
 
-        // Vẽ khiên nếu boss đang kích hoạt
         if (((BossChickenModel) model).isShieldActive()) {
             if (shieldImg != null) {
                 g.drawImage(shieldImg, (int) model.getX() - 10, (int) model.getY() - 10,
@@ -32,7 +31,6 @@ public class BossChickenView extends ChickenView {
             }
         }
 
-        // Vẽ thanh máu boss
         drawBossHealth(g);
     }
 

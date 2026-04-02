@@ -11,7 +11,7 @@ public class SoundManager {
     private final Map<String, Clip> sounds;
     private Clip bgm;
     
-    private float masterVolume = 0.8f; // Một âm lượng tổng cho tất cả
+    private float masterVolume = 0.8f; // Má»™t Ã¢m lÆ°á»£ng tá»•ng cho táº¥t cáº£
 
     private SoundManager() {
         sounds = new HashMap<>();
@@ -66,10 +66,8 @@ public class SoundManager {
         if (bgm != null) bgm.stop();
     }
 
-    /** Cập nhật âm lượng tổng (Master Volume) */
     public void setMasterVolume(float volume) {
         this.masterVolume = volume;
-        // Cập nhật âm lượng nhạc nền đang phát ngay lập tức
         if (bgm != null) {
             applyVolume(bgm, masterVolume);
         }

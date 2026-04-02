@@ -7,7 +7,6 @@ public class PlayerController implements Updatable {
 
     private final PlayerModel model;
     
-    // Kích thước game (dùng để giới hạn di chuyển)
     private static final int GAME_WIDTH  = 800;
     private static final int GAME_HEIGHT = 600;
 

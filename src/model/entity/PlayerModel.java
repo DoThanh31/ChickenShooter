@@ -3,16 +3,12 @@ package model.entity;
 import model.weapon.WeaponModel;
 import model.weapon.WeaponType;
 
-/**
- * PlayerModel - Dữ liệu người chơi
- * Tiếp tục tăng kích thước phi thuyền theo yêu cầu
- */
 public class PlayerModel extends EntityModel {
 
     public static final int START_X    = 360;
     public static final int START_Y    = 500;
-    public static final int WIDTH      = 80;  // Tăng từ 64 lên 80
-    public static final int HEIGHT     = 60;  // Tăng từ 48 lên 60
+    public static final int WIDTH      = 80;  // TÄƒng tá»« 64 lÃªn 80
+    public static final int HEIGHT     = 60;  // TÄƒng tá»« 48 lÃªn 60
     public static final int MAX_HP     = 3;
     public static final int MAX_LIVES  = 3;
 

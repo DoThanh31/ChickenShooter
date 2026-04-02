@@ -28,9 +28,8 @@ public class SettingsPanel extends JPanel {
         Font labelFont = new Font("Arial", Font.BOLD, 24);
         Color textColor = Color.WHITE;
 
-        // --- Master Volume Setting ---
         JLabel masterVolumeLabel = new JLabel("MASTER VOLUME");
-        masterVolumeLabel.setBounds(300, 200, 200, 30); // Đưa lên cao hơn
+        masterVolumeLabel.setBounds(300, 200, 200, 30); // ÄÆ°a lÃªn cao hÆ¡n
         masterVolumeLabel.setFont(labelFont);
         masterVolumeLabel.setForeground(textColor);
         add(masterVolumeLabel);
@@ -43,7 +42,6 @@ public class SettingsPanel extends JPanel {
         });
         add(masterVolumeSlider);
 
-        // --- Back Button ---
         backButton = new JButton("BACK");
         backButton.setBounds(300, 350, 200, 50);
         backButton.setFont(new Font("Arial", Font.BOLD, 20));

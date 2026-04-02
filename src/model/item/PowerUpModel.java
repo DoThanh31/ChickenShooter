@@ -2,9 +2,6 @@ package model.item;
 
 import model.entity.PlayerModel;
 
-/**
- * PowerUpModel - Item buff tạm thời cho player
- */
 public class PowerUpModel extends ItemModel {
 
     public static final int WIDTH  = 24;
@@ -22,10 +19,10 @@ public class PowerUpModel extends ItemModel {
     @Override
     public void applyEffect(PlayerModel player) {
         switch (powerUpType) {
-            case HEAL      -> player.heal(1);                  // hồi 1 HP
-            case SHIELD    -> player.activateShield(300);      // khiên 5s
-            case DAMAGE_UP -> player.getWeapon().levelUp();    // tăng damage
-            case SCORE_DRUMSTICK -> { /* Logic score sẽ được xử lý tại GameController khi nhặt */ }
+            case HEAL      -> player.heal(1);                  // há»“i 1 HP
+            case SHIELD    -> player.activateShield(300);      // khiÃªn 5s
+            case DAMAGE_UP -> player.getWeapon().levelUp();    // tÄƒng damage
+            case SCORE_DRUMSTICK -> { /* Logic score sáº½ Ä‘Æ°á»£c xá»­ lÃ½ táº¡i GameController khi nháº·t */ }
         }
     }
 

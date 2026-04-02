@@ -5,7 +5,7 @@ import model.entity.chicken.EggChickenModel;
 
 public class EggChickenController extends ChickenController {
 
-    private final LevelController levelController; // Cần LevelController để thêm trứng
+    private final LevelController levelController; // Cáº§n LevelController Ä‘á»ƒ thÃªm trá»©ng
 
     public EggChickenController(EggChickenModel model, LevelController levelController) {
         super(model);
@@ -16,7 +16,6 @@ public class EggChickenController extends ChickenController {
     protected void move() {
         model.move();
         
-        // Cập nhật vị trí và đảo chiều
         if (model.getX() <= 0 || model.getX() + model.getW() >= 800) {
             model.reverseDir();
         }
@@ -28,7 +27,6 @@ public class EggChickenController extends ChickenController {
         EggChickenModel eggChicken = (EggChickenModel) model;
         eggChicken.tickEgg();
 
-        // Gà trứng thả trứng (không phải bắn đạn)
         if (eggChicken.canDropEgg()) {
             levelController.addDroppedEgg(eggChicken.getCenterX(), eggChicken.getY() + eggChicken.getH());
             eggChicken.resetEggTimer();

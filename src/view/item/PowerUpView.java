@@ -33,7 +33,6 @@ public class PowerUpView {
         if (image != null) {
             g.drawImage(image, x, y, w, h, null);
         } else {
-            // Nếu thiếu ảnh, vẽ màu vàng cho đùi gà
             g.setColor(model.getPowerUpType() == PowerUpModel.PowerUpType.SCORE_DRUMSTICK ? Color.YELLOW : Color.GREEN);
             g.fillRect(x, y, w, h);
         }

@@ -21,7 +21,6 @@ public class HUDView {
     }
 
     public void draw(Graphics2D g) {
-        // --- VẼ HUD KHI ĐANG CHƠI ---
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 18));
         g.drawString("Score: " + gameModel.getScore(), 20, 110);
@@ -33,12 +32,10 @@ public class HUDView {
         healthBar.draw(g);
         weaponBar.draw(g);
 
-        // --- MÀN HÌNH LEVEL UP (Chuyển màn) ---
         if (gameModel.isLevelUp()) {
             drawLevelUp(g);
         }
 
-        // --- MÀN HÌNH GAME OVER ---
         if (gameModel.isGameOver()) {
             drawGameOver(g);
         }

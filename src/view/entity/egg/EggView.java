@@ -6,13 +6,10 @@ import util.SpriteLoader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-/**
- * EggView - Hiển thị trứng rơi và các giai đoạn nứt
- */
 public class EggView {
 
     private final EggModel model;
-    private final BufferedImage[] crackImages; // Mảng chứa 3 giai đoạn nứt của trứng
+    private final BufferedImage[] crackImages; // Máº£ng chá»©a 3 giai Ä‘oáº¡n ná»©t cá»§a trá»©ng
 
     public EggView(EggModel model) {
         this.model = model;
@@ -29,19 +26,16 @@ public class EggView {
         int h = model.getH();
 
         int stage = model.getCrackStage();
-        // Giới hạn stage trong mảng crackImages
         stage = Math.min(stage, crackImages.length - 1);
 
         if (crackImages[stage] != null) {
             g.drawImage(crackImages[stage], x, y, w, h, null);
         } else {
-            // Nếu thiếu ảnh, vẽ hình bầu dục màu trắng/vàng nhạt
             g.setColor(new Color(255, 253, 208));
             g.fillOval(x, y, w, h);
             g.setColor(Color.BLACK);
             g.drawOval(x, y, w, h);
             
-            // Vẽ các đường nứt đơn giản bằng code
             if (stage > 0) {
                 g.setColor(Color.DARK_GRAY);
                 g.drawLine(x + w/2, y + 5, x + w/2 - 3, y + 10);

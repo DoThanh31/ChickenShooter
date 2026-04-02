@@ -12,7 +12,6 @@ public class BossChickenController extends ChickenController {
     protected void move() {
         model.move();
         
-        // Cơ chế đảo chiều khi chạm viền
         if (model.getX() <= 0 || model.getX() + model.getW() >= 800) {
             model.reverseDir();
         }

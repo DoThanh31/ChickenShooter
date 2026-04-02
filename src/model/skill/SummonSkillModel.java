@@ -1,11 +1,7 @@
 package model.skill;
-/**
- * SummonSkillModel - Boss triệu hồi thêm gà thường
- * Kế thừ SkillModel
- */
 public class SummonSkillModel extends SkillModel {
 
-    private int summonCount; // số gà triệu hồi mỗi lần
+    private int summonCount; // sá»‘ gÃ  triá»‡u há»“i má»—i láº§n
 
     public SummonSkillModel() {
         super("SUMMON", 360, 1); // cooldown 6s, instant

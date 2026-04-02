@@ -96,7 +96,6 @@ public class LevelController implements Updatable {
                 chickens.add(new BossChickenController(bossModel));
                 bossSpawned = true;
                 
-                // PHÁT ÂM THANH KHI BOSS XUẤT HIỆN
                 SoundManager.getInstance().play("boss_spawn");
             }
         }

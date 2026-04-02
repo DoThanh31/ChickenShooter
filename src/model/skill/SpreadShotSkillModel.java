@@ -1,14 +1,10 @@
 package model.skill;
-/**
- * SpreadShotSkillModel - Boss bắn chùm 8 hướng
- * Kế thừa skillModel
- */
 public class SpreadShotSkillModel extends SkillModel {
 
-    private int bulletCount; // số viên đạn (8 hoặc 12 ở phase 3)
+    private int bulletCount; // sá»‘ viÃªn Ä‘áº¡n (8 hoáº·c 12 á»Ÿ phase 3)
 
     public SpreadShotSkillModel() {
-        super("SPREAD", 180, 1); // cooldown 3s, kích hoạt 1 frame (instant)
+        super("SPREAD", 180, 1); // cooldown 3s, kÃ­ch hoáº¡t 1 frame (instant)
         this.bulletCount = 8;
     }
 
