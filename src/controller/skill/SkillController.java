@@ -1,63 +1,64 @@
 package controller.skill;
 
-import model.entity.bullet.BulletModel;
 import model.entity.bullet.ChickenBulletModel;
 import model.entity.chicken.BossChickenModel;
-import model.skill.LaserSkillModel;
+import model.entity.chicken.NormalChickenModel;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class SkillController {
 
-    private final LaserSkillModel laserSkill;
+    private static final int GAME_WIDTH = 800;
+
+    private final Random random;
 
     public SkillController() {
-        this.laserSkill = new LaserSkillModel();
+        this.random = new Random();
     }
 
-    public void updateBossSkills(BossChickenModel boss, List<BulletModel> bullets) {
+    public BossAttackResult updateBossSkills(BossChickenModel boss) {
+        List<ChickenBulletModel> bullets = new ArrayList<>();
+        List<NormalChickenModel> summons = new ArrayList<>();
+
         if (!boss.isAlive()) {
-            laserSkill.setActive(false);
-            return;
+            return new BossAttackResult(bullets, summons);
         }
-        
-        // Luôn tick kỹ năng để giảm cooldown
+
         boss.tickSkills();
 
         float bx = boss.getCenterX();
         float by = boss.getY() + boss.getH();
 
-        // 1. Skill Spread Shot (Bắn tỏa)
         if (boss.canSpread()) {
-            if (bullets != null) {
-                bullets.add(ChickenBulletModel.angled(bx, by, -2f, 4f));
-                bullets.add(ChickenBulletModel.angled(bx, by, 0f, 4f));
-                bullets.add(ChickenBulletModel.angled(bx, by, 2f, 4f));
-            }
+            bullets.add(ChickenBulletModel.angled(bx, by, -3f, 4f));
+            bullets.add(ChickenBulletModel.angled(bx, by, -1.5f, 4.5f));
+            bullets.add(ChickenBulletModel.angled(bx, by, 0f, 5f));
+            bullets.add(ChickenBulletModel.angled(bx, by, 1.5f, 4.5f));
+            bullets.add(ChickenBulletModel.angled(bx, by, 3f, 4f));
             boss.resetSpread();
         }
 
-        // 2. Skill Laser (Tia laser ngang quét qua màn hình)
-        if (boss.canLaser() && !laserSkill.isActive()) {
-            laserSkill.activate();
-            laserSkill.setTargetY(boss.getY() + boss.getH() + 20);
-            boss.resetLaser();
+        if (boss.canSummon()) {
+            for (int i = 0; i < 2; i++) {
+                float offsetX = random.nextInt(121) - 60;
+                float summonX = Math.max(0, Math.min(GAME_WIDTH - NormalChickenModel.WIDTH, bx + offsetX));
+                float summonY = Math.min(220, by + 20 + (i * 28));
+                NormalChickenModel summon = new NormalChickenModel(summonX, summonY);
+                summon.setSpeed(1.8f + random.nextFloat() * 0.7f);
+                summons.add(summon);
+            }
+            boss.resetSummon();
         }
 
-        // Cập nhật trạng thái laser
-        if (laserSkill.isActive()) {
-            laserSkill.update();
-            // Nếu muốn laser đi theo Boss (vị trí Y của boss)
-            laserSkill.setTargetY(boss.getY() + boss.getH() + 20);
-        }
-
-        // 3. Skill Shield (Boss bật khiên)
         if (boss.canShieldSkill()) {
-            boss.activateShield(300); // 5s
+            boss.activateShield(300);
         }
+
+        return new BossAttackResult(bullets, summons);
     }
 
-    public LaserSkillModel getLaserSkill() {
-        return laserSkill;
+    public record BossAttackResult(List<ChickenBulletModel> bullets, List<NormalChickenModel> summons) {
     }
 }

@@ -12,8 +12,7 @@ import model.entity.bullet.DoubleBulletModel;
 import model.entity.bullet.SingleBulletModel;
 import model.entity.chicken.BossChickenModel;
 import model.entity.chicken.ChickenModel;
-import model.entity.chicken.EggChickenModel;
-import model.entity.egg.BabyChickenModel;
+import model.entity.chicken.NormalChickenModel;
 import model.entity.egg.EggModel;
 import model.item.ItemModel;
 import model.item.PowerUpModel;
@@ -66,14 +65,12 @@ public class GameController implements Updatable {
 
     @Override
     public void update() {
-        // Cập nhật logic Phase của GameModel (để chuyển từ LEVELUP sang PLAYING)
         gameModel.update();
 
         if (gameModel.isPause()) return;
 
-        // Nếu đang hiển thị màn hình Level Up thì tạm dừng logic game chính
         if (gameModel.isLevelUp()) {
-            bullets.clear(); // Xóa đạn cũ khi qua màn cho đẹp
+            bullets.clear();
             return;
         }
 
@@ -120,19 +117,19 @@ public class GameController implements Updatable {
 
             if (c.canShoot()) {
                 if (c instanceof BossChickenModel boss) {
-                    skillController.updateBossSkills(boss, getBulletModelListFromControllers(bullets));
+                    SkillController.BossAttackResult attack = skillController.updateBossSkills(boss);
+                    for (ChickenBulletModel bullet : attack.bullets()) {
+                        bullets.add(new BulletController(bullet));
+                    }
+                    for (NormalChickenModel summon : attack.summons()) {
+                        levelController.summonChicken(summon);
+                    }
                 } else {
                     bullets.add(new BulletController(ChickenBulletModel.straight(c.getCenterX(), c.getY() + c.getH())));
                 }
                 c.resetShootTimer();
             }
         }
-    }
-
-    private List<BulletModel> getBulletModelListFromControllers(List<BulletController> bcs) {
-        List<BulletModel> models = new ArrayList<>();
-        for (BulletController bc : bcs) models.add(bc.getModel());
-        return models;
     }
 
     private void updateBullets() {
@@ -197,15 +194,7 @@ public class GameController implements Updatable {
         List<ChickenModel> chickens = levelController.getChickens();
         List<EggModel> eggs = levelController.getActiveEggs();
 
-        if (skillController.getLaserSkill().isActive()) {
-            float laserY = skillController.getLaserSkill().getTargetY();
-            int laserH = 15;
-            if (getPlayer().getY() < laserY + laserH && getPlayer().getY() + getPlayer().getH() > laserY) {
-                getPlayer().takeDamage(1);
-                SoundManager.getInstance().play("hit");
-            }
-        }
-
+        // --- Bullet Collisions ---
         Iterator<BulletController> bIt = bullets.iterator();
         while (bIt.hasNext()) {
             BulletController bc = bIt.next();
@@ -244,6 +233,20 @@ public class GameController implements Updatable {
             if (hit && !b.isPierce()) bIt.remove();
         }
 
+        // --- Egg vs Player Collision ---
+        Iterator<EggModel> eIt = eggs.iterator();
+        while (eIt.hasNext()) {
+            EggModel egg = eIt.next();
+            if (egg.isAlive() && getPlayer().collidesWith(egg)) {
+                getPlayer().takeDamage(1); // Gây dame cho player
+                egg.takeDamage(999); // Trứng vỡ ngay lập tức
+                SoundManager.getInstance().play("hit");
+                SoundManager.getInstance().play("egg_break");
+                // Khi trứng vỡ do va chạm với player, nó sẽ tự nở ra gà con trong LevelController.updateEggs()
+            }
+        }
+
+        // --- Item vs Player Collision ---
         Iterator<ItemController> iIt = items.iterator();
         while (iIt.hasNext()) {
             ItemController ic = iIt.next();
@@ -259,6 +262,7 @@ public class GameController implements Updatable {
             }
         }
 
+        // --- Chicken Body vs Player Collision ---
         for (ChickenModel c : chickens) {
             if (c.isAlive() && getPlayer().isAlive() && c.collidesWith(getPlayer())) {
                 getPlayer().takeDamage(1);

@@ -2,9 +2,9 @@ package model.entity.bullet;
 
 public class DoubleBulletModel extends BulletModel {
 
-    // Tiếp tục tăng kích thước đạn
-    public static final int WIDTH  = 16; // Tăng từ 12 lên 16
-    public static final int HEIGHT = 32; // Tăng từ 24 lên 32
+    // Tăng kích thước đạn người chơi to hơn
+    public static final int WIDTH  = 16;
+    public static final int HEIGHT = 32;
 
     public enum Side { LEFT, RIGHT }
 

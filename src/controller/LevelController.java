@@ -144,6 +144,10 @@ public class LevelController implements Updatable {
         activeEggs.add(new EggModel(x, y));
     }
 
+    public void summonChicken(NormalChickenModel chicken) {
+        chickens.add(new NormalChickenController(chicken));
+    }
+
     private void spawnBabyChicken(float x, float y) {
         BabyChickenModel baby = new BabyChickenModel(x, y);
         chickens.add(new BabyChickenController(baby));

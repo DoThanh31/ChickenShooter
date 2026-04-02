@@ -6,7 +6,7 @@ package model.entity.bullet;
  */
 public class ChickenBulletModel extends BulletModel {
 
-    // Tăng kích thước đạn gà lên gấp đôi (từ 8 lên 16)
+    // Tăng kích thước đạn gà lên gấp đôi (từ 16 lên 24)
     public static final int WIDTH  = 24;
     public static final int HEIGHT = 24;
 

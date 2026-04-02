@@ -28,7 +28,6 @@ import view.entity.egg.EggView;
 import view.hub.HUDView;
 import view.item.PowerUpView;
 import view.item.WeaponItemView;
-import view.skill.LaserView;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -50,13 +49,11 @@ public class GamePanel extends JPanel {
     private final PlayerView playerView;
     private final HUDView hudView;
     private final GameController gameController;
-    private final LaserView laserView;
 
     public GamePanel(GameController gameController) {
         this.gameController = gameController;
         this.playerView = new PlayerView(gameController.getPlayer());
         this.hudView = new HUDView(gameController);
-        this.laserView = new LaserView(gameController.getSkillController().getLaserSkill());
 
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setDoubleBuffered(true);
@@ -113,7 +110,6 @@ public class GamePanel extends JPanel {
             drawItem(item, g2d);
         }
 
-        laserView.draw(g2d);
         hudView.draw(g2d);
     }
 
