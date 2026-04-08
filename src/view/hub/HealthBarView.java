@@ -31,7 +31,7 @@ public class HealthBarView {
     }
 
     private void drawHeart(Graphics2D g, int x, int y, int size) {
-        g.setColor(new Color(255, 50, 50)); // MÃ u Ä‘á» tÆ°Æ¡i
+        g.setColor(new Color(255, 50, 50)); // Màu đỏ tươi
         
         int circleSize = size / 2 + 2;
         g.fillOval(x, y, circleSize, circleSize);

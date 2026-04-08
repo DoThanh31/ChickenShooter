@@ -33,12 +33,12 @@ public class GameFrame extends JFrame {
         
         menuPanel = new MenuPanel(
             e -> startGame(),
-            e -> cardLayout.show(container, "SETTINGS"), // NÃºt chuyá»ƒn sang Settings
+            e -> cardLayout.show(container, "SETTINGS"), // Nút chuyển sang Settings
             e -> System.exit(0)
         );
 
         settingsPanel = new SettingsPanel(
-            e -> cardLayout.show(container, "MENU") // NÃºt Back vá» Menu
+            e -> cardLayout.show(container, "MENU") // Nút Back về Menu
         );
 
         container.add(menuPanel, "MENU");

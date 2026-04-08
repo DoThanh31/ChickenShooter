@@ -15,7 +15,7 @@ public class LaserView {
         if (!model.isActive()) return;
 
         int y = (int) model.getTargetY();
-        int height = 15; // Äá»™ dÃ y cá»§a tia laser
+        int height = 15; // Độ dày của tia laser
 
         g.setColor(new Color(255, 0, 0, 100));
         g.fillRect(0, y - 5, 800, height + 10);

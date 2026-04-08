@@ -40,7 +40,7 @@ public class PlayerView {
         Graphics2D g2d = (Graphics2D) g.create();
         
         g2d.setColor(new Color(0, 255, 255, 120));
-        g2d.setStroke(new BasicStroke(3)); // Äá»™ dÃ y cá»§a vÃ²ng khiÃªn
+        g2d.setStroke(new BasicStroke(3)); // Độ dày của vòng khiên
         
         int offset = 10;
         g2d.drawOval(x - offset, y - offset, w + offset * 2, h + offset * 2);

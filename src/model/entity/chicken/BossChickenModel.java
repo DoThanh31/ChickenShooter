@@ -4,6 +4,7 @@ public class BossChickenModel extends ChickenModel {
 
     public static final int WIDTH = 120;
     public static final int HEIGHT = 110;
+    private static final float BASE_DAMAGE_RESIST = 0.35f;
 
     public enum Phase { ONE, TWO, THREE }
 
@@ -28,10 +29,10 @@ public class BossChickenModel extends ChickenModel {
 
     private static int calcHp(int level) {
         return switch (level) {
-            case 3 -> 200;
-            case 4 -> 350;
-            case 5 -> 500;
-            default -> 600;
+            case 3 -> 360;
+            case 4 -> 550;
+            case 5 -> 800;
+            default -> 950;
         };
     }
 
@@ -101,8 +102,17 @@ public class BossChickenModel extends ChickenModel {
     @Override
     public void takeDamage(int damage) {
         if (shieldActive) return;
-        super.takeDamage(damage);
+        int reducedDamage = Math.max(1, Math.round(damage * (1.0f - getDamageResist())));
+        super.takeDamage(reducedDamage);
         updatePhase();
+    }
+
+    private float getDamageResist() {
+        return switch (phase) {
+            case ONE -> BASE_DAMAGE_RESIST;
+            case TWO -> BASE_DAMAGE_RESIST + 0.10f;
+            case THREE -> BASE_DAMAGE_RESIST + 0.20f;
+        };
     }
 
     @Override

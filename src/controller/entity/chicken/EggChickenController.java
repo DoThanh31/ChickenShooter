@@ -5,7 +5,7 @@ import model.entity.chicken.EggChickenModel;
 
 public class EggChickenController extends ChickenController {
 
-    private final LevelController levelController; // Cáº§n LevelController Ä‘á»ƒ thÃªm trá»©ng
+    private final LevelController levelController; // Cần LevelController để thêm trứng
 
     public EggChickenController(EggChickenModel model, LevelController levelController) {
         super(model);

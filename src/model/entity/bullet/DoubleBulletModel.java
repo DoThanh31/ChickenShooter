@@ -11,7 +11,7 @@ public class DoubleBulletModel extends BulletModel {
 
     public DoubleBulletModel(float x, float y, int damage, boolean pierce, Side side) {
         super(x, y, WIDTH, HEIGHT,
-                0f, -6f, // Giáº£m tá»‘c Ä‘á»™ bay tá»« -10 xuá»‘ng -6
+                0f, -6f, // Giảm tốc độ bay từ -10 xuống -6
                 damage,
                 Owner.PLAYER,
                 pierce);

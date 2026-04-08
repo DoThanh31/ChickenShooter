@@ -11,7 +11,7 @@ public class SoundManager {
     private final Map<String, Clip> sounds;
     private Clip bgm;
     
-    private float masterVolume = 0.8f; // Má»™t Ã¢m lÆ°á»£ng tá»•ng cho táº¥t cáº£
+    private float masterVolume = 0.8f; // Một âm lượng tổng cho tất cả
 
     private SoundManager() {
         sounds = new HashMap<>();

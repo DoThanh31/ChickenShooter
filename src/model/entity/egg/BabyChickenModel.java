@@ -11,7 +11,7 @@ public class BabyChickenModel extends ChickenModel {
         super(x, y,
                 WIDTH, HEIGHT,
                 1,       // maxHp
-                3.0f,    // speed (nhanh hÆ¡n gÃ  thÆ°á»ng)
+                3.0f,    // speed (nhanh hơn gà thường)
                 150,     // scoreValue
                 100);    // shootDelay
     }

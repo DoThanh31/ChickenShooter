@@ -14,9 +14,9 @@ public class PowerUpView {
     public PowerUpView(PowerUpModel model) {
         this.model = model;
         String path = switch (model.getPowerUpType()) {
-            case HEAL -> "assets/images/item_hp.png";
-            case SHIELD -> "assets/images/item_shield.png";
-            case DAMAGE_UP -> "assets/images/item_weapon.png";
+            case HEAL -> "assets/images/heal.png";
+            case SHIELD -> "assets/images/shield.png";
+            case DAMAGE_UP -> "assets/images/weapon.png";
             case SCORE_DRUMSTICK -> "assets/images/item_chicken_leg.png";
         };
         this.image = SpriteLoader.getInstance().load(path);

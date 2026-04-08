@@ -29,7 +29,7 @@ public class SpriteLoader {
             System.out.println("Loading: " + file.getAbsolutePath());
 
             if (!file.exists()) {
-                System.out.println("âŒ File khÃ´ng tá»“n táº¡i!");
+                System.out.println("File không tồn tại!");
                 return null;
             }
 

@@ -77,7 +77,7 @@ public class MenuPanel extends JPanel {
         int rectW = 300;
         int rectH = 160;
         int rectX = (800 - rectW) / 2;
-        int rectY = 150; // Ã„ÂÃ¡ÂºÂ©y bÃ¡ÂºÂ£ng Ã„â€˜iÃ¡Â»Æ’m xuÃ¡Â»â€˜ng mÃ¡Â»â„¢t chÃƒÂºt (tÃ¡Â»Â« 100 lÃƒÂªn 150)
+        int rectY = 150; // Đẩy bảng điểm xuống một chút (từ 100 lên 150)
 
         g2d.setColor(new Color(0, 0, 0, 150));
         g2d.fillRoundRect(rectX, rectY, rectW, rectH, 20, 20);

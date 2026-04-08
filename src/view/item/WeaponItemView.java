@@ -13,7 +13,7 @@ public class WeaponItemView {
 
     public WeaponItemView(WeaponItemModel model) {
         this.model = model;
-        this.image = SpriteLoader.getInstance().load("assets/images/item_weapon.png");
+        this.image = SpriteLoader.getInstance().load("assets/images/weapon.png");
     }
 
     public void draw(Graphics2D g) {

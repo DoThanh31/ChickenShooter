@@ -6,14 +6,14 @@ public class LevelConfig {
     private final int   level;
     private final int   normalCount;
     private final int   eggCount;
-    private final int   fallingEggCount; // Sá»‘ lÆ°á»£ng trá»©ng tá»± rÆ¡i (má»›i)
+    private final int   fallingEggCount; // Số lượng trứng tự rơi (mới)
     private final boolean hasBoss;
     private final float chickenSpeed;
 
     private static final LevelConfig[] CONFIGS = {
             new LevelConfig(1,  8, 0, 0, false, 1.0f),
             new LevelConfig(2, 10, 0, 0, false, 1.3f),
-            new LevelConfig(3,  0, 0, 15, false, 1.5f), // LEVEL 3: CHá»ˆ TRá»¨NG RÆ I (15 quáº£)
+            new LevelConfig(3,  0, 0, 15, false, 1.5f), // LEVEL 3: CHỈ TRỨNG RƠI (15 quả)
             new LevelConfig(4,  8, 4, 10, false,  1.8f),
             new LevelConfig(5,  4, 4, 10, true,  2.0f),
     };

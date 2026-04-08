@@ -42,6 +42,7 @@ public class GameController implements Updatable {
 
     private static final int GAME_WIDTH  = 800;
     private static final int GAME_HEIGHT = 600;
+    private static final float BONUS_ITEM_DROP_CHANCE = 0.25f;
 
     public GameController() {
         this.gameModel       = new GameModel();
@@ -175,7 +176,7 @@ public class GameController implements Updatable {
 
     private void spawnItem(float x, float y, int scoreValue) {
         items.add(new ItemController(new PowerUpModel(x, y, PowerUpModel.PowerUpType.SCORE_DRUMSTICK)));
-        if (random.nextFloat() < 0.15f) { 
+        if (random.nextFloat() < BONUS_ITEM_DROP_CHANCE) {
             int r = random.nextInt(100);
             ItemModel buff;
             if (r < 40) {
@@ -236,8 +237,8 @@ public class GameController implements Updatable {
         while (eIt.hasNext()) {
             EggModel egg = eIt.next();
             if (egg.isAlive() && getPlayer().collidesWith(egg)) {
-                getPlayer().takeDamage(1); // GÃ¢y dame cho player
-                egg.takeDamage(999); // Trá»©ng vá»¡ ngay láº­p tá»©c
+                getPlayer().takeDamage(1); // Gay dame cho player
+                egg.takeDamage(999); // Trứng vỡ ngay lập tức
                 SoundManager.getInstance().play("hit");
                 SoundManager.getInstance().play("egg_break");
             }

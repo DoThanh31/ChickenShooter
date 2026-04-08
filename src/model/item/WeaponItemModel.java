@@ -8,19 +8,19 @@ public class WeaponItemModel extends ItemModel {
     public static final int WIDTH  = 24;
     public static final int HEIGHT = 24;
 
-    private WeaponType weaponType; // loáº¡i Ä‘áº¡n item nÃ y chá»©a
+    private WeaponType weaponType; // loại đạn item này chứa
 
     public WeaponItemModel(float x, float y, WeaponType weaponType) {
-        super(x, y, WIDTH, HEIGHT, 300); // tá»“n táº¡i 5s (60fps)
+        super(x, y, WIDTH, HEIGHT, 300); // tồn tại 5s (60fps)
         this.weaponType = weaponType;
     }
 
     @Override
     public void applyEffect(PlayerModel player) {
         if (player.getWeapon().getType() == weaponType) {
-            player.getWeapon().levelUp();        // cÃ¹ng loáº¡i â†’ lÃªn level
+            player.getWeapon().levelUp();        // cùng loại -> lên level
         } else {
-            player.getWeapon().switchType(weaponType); // khÃ¡c loáº¡i â†’ Ä‘á»•i
+            player.getWeapon().switchType(weaponType); // khác loại -> đổi
         }
     }
 

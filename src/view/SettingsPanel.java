@@ -29,7 +29,7 @@ public class SettingsPanel extends JPanel {
         Color textColor = Color.WHITE;
 
         JLabel masterVolumeLabel = new JLabel("MASTER VOLUME");
-        masterVolumeLabel.setBounds(300, 200, 200, 30); // ÄÆ°a lÃªn cao hÆ¡n
+        masterVolumeLabel.setBounds(300, 200, 200, 30); // Đưa lên cao hơn
         masterVolumeLabel.setFont(labelFont);
         masterVolumeLabel.setForeground(textColor);
         add(masterVolumeLabel);

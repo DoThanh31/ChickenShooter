@@ -5,7 +5,7 @@ import model.entity.PlayerModel;
 
 public abstract class ItemModel extends EntityModel {
 
-    protected int lifetime;  // frames cÃ²n láº¡i trÆ°á»›c khi biáº¿n máº¥t
+    protected int lifetime;  // frames còn lại trước khi biến mất
     protected float fallSpeed;
 
     public ItemModel(float x, float y, int w, int h, int lifetime) {

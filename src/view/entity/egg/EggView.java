@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 public class EggView {
 
     private final EggModel model;
-    private final BufferedImage[] crackImages; // Máº£ng chá»©a 3 giai Ä‘oáº¡n ná»©t cá»§a trá»©ng
+    private final BufferedImage[] crackImages; // Mảng chứa 3 giai đoạn nứt của trứng
 
     public EggView(EggModel model) {
         this.model = model;

@@ -12,7 +12,7 @@ public class BossChickenView extends ChickenView {
 
     public BossChickenView(BossChickenModel model) {
         super(model, "assets/images/boss.png");
-        this.shieldImg = SpriteLoader.getInstance().load("assets/images/shield_effect.png");
+        this.shieldImg = SpriteLoader.getInstance().load("assets/images/shield.tj.png");
     }
 
     @Override

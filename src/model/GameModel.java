@@ -7,11 +7,11 @@ public class GameModel {
     public enum Phase { PLAYING, PAUSE, LEVELUP, WIN, LOSE }
 
     private int   score;
-    private int   level;      // 1 â†’ 5
+    private int   level;      // 1 -> 5
     private Phase phase;
     private int   highScore; // Top 1 Score
     
-    private int levelUpTimer = 0; // Äáº¿m ngÆ°á»£c thá»i gian hiá»ƒn thá»‹ mÃ n hÃ¬nh Level Up
+    private int levelUpTimer = 0; // Đếm ngược thời gian hiển thị màn hình Level Up
 
     public static final int MAX_LEVEL = 5;
 
@@ -31,8 +31,8 @@ public class GameModel {
     public void nextLevel() {
         if (level < MAX_LEVEL) {
             level++;
-            phase = Phase.LEVELUP; // Chuyá»ƒn sang phase LEVELUP
-            levelUpTimer = 120;    // Hiá»ƒn thá»‹ trong khoáº£ng 2 giÃ¢y (60fps * 2)
+            phase = Phase.LEVELUP; // Chuyển sang phase LEVELUP
+            levelUpTimer = 120;    // Hiển thị trong khoảng 2 giây (60fps * 2)
             System.out.println("Model Level Up to: " + level);
         } else {
             setWin();
@@ -44,7 +44,7 @@ public class GameModel {
             if (levelUpTimer > 0) {
                 levelUpTimer--;
             } else {
-                phase = Phase.PLAYING; // Quay láº¡i chÆ¡i sau khi háº¿t thá»i gian chá»
+                phase = Phase.PLAYING; // Quay lại chơi sau khi hết thời gian chờ
             }
         }
     }

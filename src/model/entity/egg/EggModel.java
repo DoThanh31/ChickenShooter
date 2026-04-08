@@ -9,13 +9,13 @@ public class EggModel extends EntityModel {
     public static final int HEIGHT = 28;
     public static final float FALL_SPEED = 2.5f;
 
-    private int   hatchTimer;   // frames cÃ²n láº¡i Ä‘á»ƒ ná»Ÿ
-    private int   hatchDelay;   // tá»•ng frames cáº§n Ä‘á»ƒ ná»Ÿ
-    private int   crackStage;   // 0 â†’ 3
+    private int   hatchTimer;   // frames còn lại để nở
+    private int   hatchDelay;   // tổng frames cần để nở
+    private int   crackStage;   // 0 -> 3
 
     public EggModel(float x, float y) {
         super(x, y, WIDTH, HEIGHT, 1);
-        this.hatchDelay  = 180; // 3s á»Ÿ 60fps
+        this.hatchDelay  = 180; // 3s ở 60fps
         this.hatchTimer  = hatchDelay;
         this.crackStage  = 0;
     }
